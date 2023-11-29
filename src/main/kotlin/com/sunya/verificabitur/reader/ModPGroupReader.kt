@@ -2,19 +2,30 @@ package com.sunya.verificabitur.reader
 
 import java.math.BigInteger
 
-data class ModPGroupNode(val modulus : BigInteger, val order : BigInteger, val generator : BigInteger, val encoding : Int, )
+data class ModPGroupNode(val wtf: BigInteger, val modulus : BigInteger, val order : BigInteger, val generator : BigInteger, val encoding : Int, ) {
+    override fun toString(): String {
+        return  "      wtf = ${this.wtf.toString(16)}\n" +
+                "  modulus = ${this.modulus.toString(16)}\n" +
+                "    order = ${this.order.toString(16)}\n" +
+                "generator = ${this.generator.toString(16)}\n" +
+                " encoding = ${this.encoding.toString(16)}"
+    }
+}
 
 fun readModPGroup(marsh : String) : ModPGroupNode {
-    val root = readByteTree(marsh)
-    require(root.className == "com.verificatum.arithm.ModPGroup")
+    val tree = readByteTree(marsh)
+    require(tree.className == "com.verificatum.arithm.ModPGroup")
 
-    val modPGroupNode = root.root.children[1]
+    val wtfNode = tree.root.child[0]
+    val wtf = BigInteger(1, wtfNode.content)
+
+    val modPGroupNode = tree.root.child[1]
     require(modPGroupNode.n == 4)
 
-    val modulus = BigInteger(1, modPGroupNode.children[0].content)
-    val order = BigInteger(1, modPGroupNode.children[1].content)
-    val generator = BigInteger(1, modPGroupNode.children[2].content)
-    val encoding = readInt(modPGroupNode.children[3].content!!, 0)
+    val modulus = BigInteger(1, modPGroupNode.child[0].content)
+    val order = BigInteger(1, modPGroupNode.child[1].content)
+    val generator = BigInteger(1, modPGroupNode.child[2].content)
+    val encoding = readInt(modPGroupNode.child[3].content!!, 0)
 
-    return ModPGroupNode(modulus, order, generator, encoding)
+    return ModPGroupNode(wtf, modulus, order, generator, encoding)
 }

@@ -28,7 +28,7 @@ class ModPGroupReaderTest {
     @Test
     fun testReadModPGroup() {
         val modPGroupNode = readModPGroup(bt)
-        println("\nreadModPGroup = $modPGroupNode")
+        println("\nreadModPGroup\n$modPGroupNode")
 
         val egkGroup = productionGroup(PowRadixOption.HIGH_MEMORY_USE, ProductionMode.Mode4096)
         val egkConstants = egkGroup.constants

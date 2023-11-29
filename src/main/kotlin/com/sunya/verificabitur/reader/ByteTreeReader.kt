@@ -21,15 +21,10 @@ fun readTextLinesFromFile(filename : String, maxLines : Int = -1) {
     println("total nlines = $count")
 }
 
-fun readByteTreeFromFile(filename : String, maxDepth : Int = 100) : ByteTreeRoot {
-    println("readByteTreeFromFile = ${filename}")
-
-    // gulp the entire file to a byte array
-    val file = File(filename)
+fun readByteTreeFromFile(filename : String) : ByteTreeRoot {
+    val file = File(filename) // gulp the entire file to a byte array
     val ba : ByteArray = file.readBytes()
-    val tree = readByteTree(ba)
-    println(tree.show(maxDepth))
-    return tree
+    return readByteTree(ba)
 }
 
 fun readByteTree(marsh : String) : ByteTreeRoot {
@@ -52,8 +47,8 @@ fun readByteTree(marsh : String) : ByteTreeRoot {
     val result = ByteTreeRoot(byteArray)
 
     result.beforeDoubleColon = beforeDoubleColon
-    if (result.root.children.size == 2) {
-        val classNode = result.root.children[0]
+    if (result.root.child.size == 2) {
+        val classNode = result.root.child[0]
         if (classNode.content != null) { // && is UTF
             result.className = String(classNode.content)
         }
@@ -89,8 +84,8 @@ fun readByteTree(ba : ByteArray) : ByteTreeRoot {
     val result = ByteTreeRoot(byteArray)
 
     result.beforeDoubleColon = beforeDoubleColon
-    if (result.root.children.size == 2) {
-        val classNode = result.root.children[0]
+    if (result.root.child.size == 2) {
+        val classNode = result.root.child[0]
         if (classNode.content != null) {
             result.className = String(classNode.content)
         }
@@ -124,7 +119,7 @@ class ByteTreeRoot(byteArray : ByteArray) {
     inner class Node(ba: ByteArray, start: Int, val name : String) {
         val isLeaf: Boolean
         val n: Int
-        val children = mutableListOf<Node>()
+        val child = mutableListOf<Node>()
         val content: ByteArray?
         var size: Int = 5
         var nodeCount = 1
@@ -156,13 +151,15 @@ class ByteTreeRoot(byteArray : ByteArray) {
                     repeat(n) {
                         val child = makeNode(ba, idx, "$name-$nodeCount")
                         nodeCount++
-                        children.add(child)
+                        this.child.add(child)
                         idx += child.size
                         this.size += child.size
                     }
                 }
             }
         }
+
+        fun childs() = child.size
 
         fun show(indent: Indent, maxDepth: Int = 100): String {
             return if (indent.level > maxDepth && nodeCount > 11) "" else {
@@ -172,7 +169,7 @@ class ByteTreeRoot(byteArray : ByteArray) {
                         appendLine("content='${content!!.toHexLower()}'")
                     } else {
                         appendLine()
-                        children.forEach { append(it.show(indent.incr(), maxDepth)) }
+                        child.forEach { append(it.show(indent.incr(), maxDepth)) }
                     }
                 }
             }

@@ -9,6 +9,7 @@ import java.math.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/** Compare ElectionGuard and Verificatum group definitions */
 class GroupCompareTest {
 
     @Test
@@ -23,6 +24,7 @@ class GroupCompareTest {
         println("ModPGroup = ${group}")
     }
 
+    // This is to get the string representation of the ModPGroup equivilent to EG group.
     @Test
     fun testModPGroupGen() {
         val egkGroup = productionGroup(PowRadixOption.HIGH_MEMORY_USE, ProductionMode.Mode4096)
@@ -39,9 +41,10 @@ class GroupCompareTest {
         //                     final RandomSource rs,
         //                     final int certainty)
         val vcrGroup = ModPGroup(modulus, order, gli, SAFEPRIME_ENCODING, RandomDevice(), 50)
+        println("vcrGroup = '$vcrGroup'")
 
-        val help = ModPGroupGen().gen(RandomDevice(), arrayOf("-h"))
-        //println("help: ${help}")
+        // val help = ModPGroupGen().gen(RandomDevice(), arrayOf("-h"))
+        // println("help: ${help}")
 
         // RandomSource randomSource, final String[] args
         val genGroupDesc = ModPGroupGen().gen(
@@ -62,7 +65,6 @@ class GroupCompareTest {
         val egkConstants = egkGroup.constants
         println("egkConstants = $egkConstants")
 
-
         val modulus = convert(egkConstants.largePrime)
         val order = convert(egkConstants.smallPrime)
         val gli = convert(egkConstants.generator)
@@ -79,18 +81,18 @@ class GroupCompareTest {
         testEquals(egkConstants.smallPrime.toHexLower(), vcrGroup.elementOrder)
         testEquals(egkConstants.largePrime.toHexLower(), vcrGroup.modulus)
         // testEquals(egkConstants.cofactor.toHex(), vcrGroup.coOrder)
-        println("vcrGroup = $vcrGroup")
+        println("\nvcrGroup = $vcrGroup")
+
+        val ntrials = 1000
 
         // test g^q
-        repeat(1000) {
+        repeat(ntrials) {
             val randomQ = egkGroup.randomElementModQ()
             val gp: ElementModP = egkGroup.gPowP(randomQ)
             val vgp: LargeInteger = gli.modPow(convert(randomQ), modulus)
             testEquals(gp, normalize(vgp))
             // println(" $randomQ ok")
         }
-
-        val ntrials = 1000
 
         val starting = getSystemTimeInMillis()
         var summ: ElementModP = egkGroup.ONE_MOD_P
@@ -115,7 +117,8 @@ class GroupCompareTest {
 
         println("speedup old/new = ${vcr.toDouble() / egk}")
 
-//        testEquals(summ, normalize(summ2))
+        // fails
+        // testEquals(summ, normalize(summ2))
     }
 }
 
