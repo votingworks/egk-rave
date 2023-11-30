@@ -1,4 +1,4 @@
-package com.sunya.verificabitur.vmn
+package org.cryptobiotic.verificabitur.vmn
 
 import com.verificatum.arithm.PGroup
 import com.verificatum.arithm.PGroupElementArray

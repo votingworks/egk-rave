@@ -1,6 +1,9 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.productionGroup
+import org.cryptobiotic.verificabitur.reader.ByteTreeRoot
+import org.cryptobiotic.verificabitur.reader.MixnetPublicKey
+import org.cryptobiotic.verificabitur.reader.readPublicKey
 import org.junit.jupiter.api.Test
 
 class ByteTreeReaderTest {
@@ -24,7 +27,7 @@ class ByteTreeReaderTest {
     fun testReadRavePublicKeyFile() {
         val filename = raveDir + "publickey.raw"
         println("readPublicKeyFile filename = ${filename}")
-        val root = readByteTreeFromFile(filename)
+        val root = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
         println(root.show(10))
     }
 
@@ -46,6 +49,29 @@ class ByteTreeReaderTest {
         readByteTreeFromFile(nizkpDir + "PoSCommitment01.bt", 1)
         readByteTreeFromFile(nizkpDir + "PoSReply01.bt", 1)
     }
+
+    @Test
+    fun testReadPermutationCommitment1() {
+        readByteTreeFromFile(nizkpDir + "PermutationCommitment01.bt", 10)
+    }
+
+    @Test
+    fun testReadPosCommitment2() {
+        readByteTreeFromFile(nizkpDir + "PoSCommitment01.bt", 10)
+    }
+
+    @Test
+    fun testReadPermutationCommitment3() {
+        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PermutationCommitment01.bt", 1)
+    }
+
+    @Test
+    fun testReadPoSReply() {
+        readByteTreeFromFile(nizkpDir + "PoSReply01.bt", 10)
+    }
+
+    /////////////////////////////////////////////
+
 
     @Test
     fun testReadBBProofs() {
@@ -72,14 +98,14 @@ class ByteTreeReaderTest {
     fun testReadDemoPublicKeyFile() {
         val filename = demoDir + "Party01/publicKey"
         println("readPublicKeyFile filename = ${filename}")
-        val root = readByteTreeFromFile(filename)
+        val root = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
         println(root.show(10))
     }
 }
 
 fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTreeRoot {
     println("readByteTreeFromFile = ${filename}")
-    val tree = readByteTreeFromFile(filename)
+    val tree = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
     println(tree.show(maxDepth))
     return tree
 }

@@ -1,4 +1,4 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
 import java.math.BigInteger

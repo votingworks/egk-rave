@@ -1,5 +1,6 @@
-package com.sunya.verificabitur.vmn
+package org.cryptobiotic.verificabitur.vmn
 
+import org.cryptobiotic.verificabitur.vmn.RunMixnet
 import kotlin.test.Test
 
 class RunMixnetTest {

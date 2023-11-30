@@ -1,8 +1,8 @@
-package com.sunya.verificabitur
+package org.cryptobiotic.verificabitur
 
 import com.github.michaelbull.result.unwrap
-import com.sunya.verificabitur.reader.MixnetPublicKey
-import com.sunya.verificabitur.reader.readPublicKey
+import org.cryptobiotic.verificabitur.reader.MixnetPublicKey
+import org.cryptobiotic.verificabitur.reader.readPublicKey
 import electionguard.core.*
 import electionguard.publish.Consumer
 import electionguard.publish.makeConsumer

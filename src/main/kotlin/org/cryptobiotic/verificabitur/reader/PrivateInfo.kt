@@ -1,4 +1,4 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
