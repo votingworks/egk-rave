@@ -1,4 +1,4 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.Base16.toHex
 import electionguard.core.ElementModP

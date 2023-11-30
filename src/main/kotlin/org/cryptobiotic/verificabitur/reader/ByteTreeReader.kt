@@ -1,10 +1,9 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.Base16.fromHex
+import electionguard.core.Base16.toHex
 import java.io.EOFException
 import java.io.File
-
-// seems likely i ported this from the java in vcr
 
 fun readTextLinesFromFile(filename : String, maxLines : Int = -1) {
     println("readTextTreeFromFile = ${filename}")
@@ -29,7 +28,7 @@ fun readByteTreeFromFile(filename : String) : ByteTreeRoot {
 
 fun readByteTree(marsh : String) : ByteTreeRoot {
     var beforeDoubleColon : String? = null
-    var byteArray : ByteArray? = if (marsh.contains("::")) {
+    val byteArray : ByteArray? = if (marsh.contains("::")) {
         val frags = marsh.split("::")
         // frags.forEach { println(it) }
         beforeDoubleColon = frags[0]
@@ -93,11 +92,11 @@ fun readByteTree(ba : ByteArray) : ByteTreeRoot {
     return result
 }
 
+// A byte tree is either a leaf containing an array of bytes, or a node containing other byte trees
 class ByteTreeRoot(byteArray : ByteArray) {
     var error: String? = null
     var beforeDoubleColon: String? = null
     var className: String? = null
-    private var nodeCount = 0
     val root : Node = Node(byteArray, 0, "root")
 
     fun show(maxDepth: Int = 100): String {
@@ -166,7 +165,7 @@ class ByteTreeRoot(byteArray : ByteArray) {
                 return buildString {
                     append("${indent}$name n=$n size=$size ")
                     if (isLeaf) {
-                        appendLine("content='${content!!.toHexLower()}'")
+                        appendLine("content='${content!!.toHex().lowercase()}'")
                     } else {
                         appendLine()
                         child.forEach { append(it.show(indent.incr(), maxDepth)) }
@@ -186,30 +185,6 @@ fun readInt(ba : ByteArray, start : Int) : Int {
         throw EOFException()
     }
     return (ch1 shl 24) + (ch2 shl 16) + (ch3 shl 8) + ch4
-}
-
-private val hexChars =
-    charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
-
-fun ByteArray.toHexLower(): String {
-    // Performance note: since we're doing lookups in an array of characters, this
-    // is going to run pretty quickly. This code is in the path for computing
-    // cryptographic hashes, so performance matters here.
-
-    if (isEmpty()) return "" // hopefully won't happen
-
-    val result =
-        CharArray(2 * this.size) {
-            val offset: Int = it / 2
-            val even: Boolean = (it and 1) == 0
-            val nibble =
-                if (even)
-                    (this[offset].toInt() and 0xf0) shr 4
-                else
-                    this[offset].toInt() and 0xf
-            hexChars[nibble]
-        }
-    return result.concatToString()
 }
 
 private const val nspaces : Int = 2

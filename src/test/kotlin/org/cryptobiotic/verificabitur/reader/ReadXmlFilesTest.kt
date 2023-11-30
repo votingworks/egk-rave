@@ -1,5 +1,7 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
+import org.cryptobiotic.verificabitur.reader.readPrivateInfo
+import org.cryptobiotic.verificabitur.reader.readProtocolInfo
 import org.junit.jupiter.api.Test
 
 class ReadXmlFilesTest {

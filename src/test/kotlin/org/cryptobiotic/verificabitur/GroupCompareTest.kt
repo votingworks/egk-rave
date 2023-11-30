@@ -1,10 +1,10 @@
-package com.sunya.verificabitur
+package org.cryptobiotic.verificabitur
 
-import com.sunya.verificabitur.reader.toHexLower
 import com.verificatum.arithm.*
 import com.verificatum.arithm.ModPGroup.SAFEPRIME_ENCODING
 import com.verificatum.crypto.RandomDevice
 import electionguard.core.*
+import electionguard.core.Base16.toHex
 import java.math.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -77,9 +77,9 @@ class GroupCompareTest {
         //                     final int certainty)
         val vcrGroup = ModPGroup(modulus, order, gli, SAFEPRIME_ENCODING, RandomDevice(), 50)
 
-        testEquals(egkConstants.generator.toHexLower(), vcrGroup.getg())
-        testEquals(egkConstants.smallPrime.toHexLower(), vcrGroup.elementOrder)
-        testEquals(egkConstants.largePrime.toHexLower(), vcrGroup.modulus)
+        testEquals(egkConstants.generator.toHex().lowercase(), vcrGroup.getg())
+        testEquals(egkConstants.smallPrime.toHex().lowercase(), vcrGroup.elementOrder)
+        testEquals(egkConstants.largePrime.toHex().lowercase(), vcrGroup.modulus)
         // testEquals(egkConstants.cofactor.toHex(), vcrGroup.coOrder)
         println("\nvcrGroup = $vcrGroup")
 
@@ -137,11 +137,11 @@ fun convert(elem : Element) : LargeInteger {
 fun normalize(li : LargeInteger) : String {
     val ba = li.toBigInteger().toByteArray()
     val nba = ba.normalize(512)
-    return nba.toHexLower()
+    return nba.toHex().lowercase()
 }
 
 fun normalize(bi : BigInteger, nbytes : Int = 512) : String {
     val ba = bi.toByteArray()
     val nba = ba.normalize(nbytes)
-    return nba.toHexLower()
+    return nba.toHex().lowercase()
 }

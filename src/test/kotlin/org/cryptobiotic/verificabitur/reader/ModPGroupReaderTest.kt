@@ -1,8 +1,11 @@
-package com.sunya.verificabitur.reader
+package org.cryptobiotic.verificabitur.reader
 
-import com.sunya.verificabitur.normalize
-import com.sunya.verificabitur.testEquals
+import org.cryptobiotic.verificabitur.normalize
+import org.cryptobiotic.verificabitur.testEquals
 import electionguard.core.*
+import electionguard.core.Base16.toHex
+import org.cryptobiotic.verificabitur.reader.readByteTree
+import org.cryptobiotic.verificabitur.reader.readModPGroup
 import org.junit.jupiter.api.Test
 
 class ModPGroupReaderTest {
@@ -34,9 +37,9 @@ class ModPGroupReaderTest {
         val egkConstants = egkGroup.constants
         println("egkConstants = $egkConstants")
 
-        testEquals(egkConstants.generator.toHexLower(), normalize(modPGroupNode.generator))
-        testEquals(egkConstants.largePrime.toHexLower(), normalize(modPGroupNode.modulus))
-        testEquals(egkConstants.smallPrime.toHexLower(), normalize(modPGroupNode.order, 32))
+        testEquals(egkConstants.generator.toHex().lowercase(), normalize(modPGroupNode.generator))
+        testEquals(egkConstants.largePrime.toHex().lowercase(), normalize(modPGroupNode.modulus))
+        testEquals(egkConstants.smallPrime.toHex().lowercase(), normalize(modPGroupNode.order, 32))
     }
 
     @Test
