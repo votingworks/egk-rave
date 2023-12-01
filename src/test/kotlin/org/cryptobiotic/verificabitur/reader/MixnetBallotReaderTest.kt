@@ -2,7 +2,6 @@ package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
 import electionguard.rave.CiphertextDecryptor
-import org.cryptobiotic.verificabitur.reader.readMixnetBallot
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 

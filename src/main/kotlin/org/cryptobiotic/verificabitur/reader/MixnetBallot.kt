@@ -3,7 +3,6 @@ package org.cryptobiotic.verificabitur.reader
 import electionguard.core.*
 import java.math.BigInteger
 
-// converts raw bytetrees to List<MixnetBallot>
 data class MixnetBallot(
     val ciphertexts: List<ElGamalCiphertext>
 ) {
@@ -19,6 +18,7 @@ data class MixnetBallot(
     }
 }
 
+// converts raw bytetrees to List<MixnetBallot>
 // readByteTreeFromFile = working/vf/dir/nizkp/98330134/proofs/Ciphertexts01.bt
 //root n=2 size=458267
 //  root-1 n=34 size=229131

@@ -1,9 +1,6 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.productionGroup
-import org.cryptobiotic.verificabitur.reader.ByteTreeRoot
-import org.cryptobiotic.verificabitur.reader.MixnetPublicKey
-import org.cryptobiotic.verificabitur.reader.readPublicKey
 import org.junit.jupiter.api.Test
 
 class ByteTreeReaderTest {
@@ -15,7 +12,7 @@ class ByteTreeReaderTest {
 
     @Test
     fun testReadRaveOutput() {
-        readByteTreeFromFile(raveDir + "after-mix-2-ciphertexts.raw", 1)
+        readByteTreeFromFile(raveDir + "after-mix-2-ciphertexts.raw", 2)
     }
 
     @Test
@@ -27,7 +24,7 @@ class ByteTreeReaderTest {
     fun testReadRavePublicKeyFile() {
         val filename = raveDir + "publickey.raw"
         println("readPublicKeyFile filename = ${filename}")
-        val root = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
+        val root = readByteTreeFromFile(filename)
         println(root.show(10))
     }
 
@@ -95,17 +92,22 @@ class ByteTreeReaderTest {
     }
 
     @Test
+    fun testReadPosCommitment3() {
+        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PoSCommitment01.bt", 10)
+    }
+
+    @Test
     fun testReadDemoPublicKeyFile() {
         val filename = demoDir + "Party01/publicKey"
         println("readPublicKeyFile filename = ${filename}")
-        val root = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
+        val root = readByteTreeFromFile(filename)
         println(root.show(10))
     }
 }
 
 fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTreeRoot {
     println("readByteTreeFromFile = ${filename}")
-    val tree = org.cryptobiotic.verificabitur.reader.readByteTreeFromFile(filename)
+    val tree = readByteTreeFromFile(filename)
     println(tree.show(maxDepth))
     return tree
 }

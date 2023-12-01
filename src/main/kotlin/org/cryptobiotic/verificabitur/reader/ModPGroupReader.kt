@@ -1,5 +1,8 @@
 package org.cryptobiotic.verificabitur.reader
 
+import com.verificatum.arithm.LargeInteger
+import com.verificatum.arithm.ModPGroup
+import com.verificatum.crypto.RandomSource
 import java.math.BigInteger
 
 data class ModPGroupNode(val wtf: BigInteger, val modulus : BigInteger, val order : BigInteger, val generator : BigInteger, val encoding : Int, ) {
@@ -10,9 +13,19 @@ data class ModPGroupNode(val wtf: BigInteger, val modulus : BigInteger, val orde
                 "generator = ${this.generator.toString(16)}\n" +
                 " encoding = ${this.encoding.toString(16)}"
     }
+
+    fun makeModPGroup(rs: RandomSource, certainty: Int) =
+        ModPGroup(
+            LargeInteger(modulus),
+            LargeInteger(order),
+            LargeInteger(generator),
+            encoding,
+            rs,
+            certainty
+        )
 }
 
-fun readModPGroup(marsh : String) : ModPGroupNode {
+fun readModPGroupNode(marsh : String) : ModPGroupNode {
     val tree = readByteTree(marsh)
     require(tree.className == "com.verificatum.arithm.ModPGroup")
 
