@@ -175,7 +175,7 @@ class RunMixnet {
 class Mixnet(privInfo: String, protInfo: String) {
     val elGamalRawInterface: ProtocolElGamalInterface
     val mixnet: MixNetElGamal
-    var timer: SimpleTimer? = null
+    val timer = SimpleTimer()
 
     init {
         val factory: ProtocolElGamalInterfaceFactory = MixNetElGamalInterfaceFactory()
@@ -290,7 +290,6 @@ class Mixnet(privInfo: String, protInfo: String) {
 
     private fun prelude(mixnet: MixNetElGamal) {
         mixnet.startServers()
-        timer = SimpleTimer()
         mixnet.setup()
     }
 
