@@ -1,27 +1,21 @@
 package org.cryptobiotic.verificabitur.vmn
 
-import com.verificatum.crypto.RandomSource
+import com.verificatum.crypto.RandomDevice
 import com.verificatum.eio.ExtIO
 import com.verificatum.protocol.Protocol
 import com.verificatum.protocol.ProtocolError
 import com.verificatum.protocol.ProtocolFormatException
 import com.verificatum.protocol.elgamal.ProtocolElGamalInterface
 import com.verificatum.protocol.elgamal.ProtocolElGamalInterfaceFactory
-import com.verificatum.protocol.mixnet.*
-import com.verificatum.ui.gen.GeneratorTool
+import com.verificatum.protocol.mixnet.MixNetElGamalInterfaceFactory
+import com.verificatum.protocol.mixnet.MixNetElGamalVerifyFiatShamir
 import com.verificatum.util.SimpleTimer
-
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
 import java.io.File
 import java.io.IOException
-
-private val logger = KotlinLogging.logger("RunVerifier")
-private const val VERIFICATUM_RANDOM_SOURCE = "/home/stormy/.verificatum_random_source"
-private const val VERIFICATUM_RANDOM_SEED = "/home/stormy/.verificatum_random_seed"
 
 class RunVerifier {
 
@@ -91,11 +85,12 @@ class Verifier(nizkp: String, protInfo: String, val auxsid: String, val width: I
 
         val generator = factory.getGenerator(protocolInfoFile)
         val protocolInfo = Protocol.getProtocolInfo(generator, protocolInfoFile)
-        val randomSource = getRandomSource(VERIFICATUM_RANDOM_SOURCE, VERIFICATUM_RANDOM_SEED)
+        println("Using Generator class = ${generator.javaClass.name}")
+        // println("Using Protocol = ${protocolInfo.toXML()}")
 
         verifier = MixNetElGamalVerifyFiatShamir(
             protocolInfo,
-            randomSource,
+            RandomDevice(),
             System.out,
             verbose,
             emptySet(),
@@ -123,14 +118,4 @@ class Verifier(nizkp: String, protInfo: String, val auxsid: String, val width: I
         }
     }
 
-    private fun getRandomSource(rsFilename: String, seedFilename: String): RandomSource {
-        val rsFile = File(rsFilename)
-        val seedFile = File(seedFilename)
-        val tmpSeedFile = File(seedFilename + "_TMP")
-        return GeneratorTool.standardRandomSource(
-            rsFile,
-            seedFile,
-            tmpSeedFile
-        )
-    }
 }
