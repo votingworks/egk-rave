@@ -4,7 +4,7 @@ import kotlin.test.Test
 
 class RunMixnetTest {
     val input = "testOut/runMixnetTest/input"
-    val working = "testOut/runMixnetTest/output" // also privInfo.dir
+    val working = "testOut/runMixnetTest/output"
 
     @Test
     fun testRunMixnet() {
