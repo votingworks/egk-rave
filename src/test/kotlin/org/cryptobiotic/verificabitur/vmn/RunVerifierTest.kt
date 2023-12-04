@@ -3,11 +3,18 @@ package org.cryptobiotic.verificabitur.vmn
 import kotlin.test.Test
 
 class RunVerifierTest {
-    val inputDir = "working/vf"
-    val outputDir = "testDir"
 
     @Test
     fun testRunVerifier() {
+        val inputDir = "working/vf"
+        RunVerifier.main(
+            arrayOf(
+                "-nizkp", "$inputDir/dir/nizkp/1701230437",
+                "-protInfo", "$inputDir/protInfo.xml",
+                "-auxsid", "1701230437",
+                "-width", "34",
+            )
+        )
         RunVerifier.main(
             arrayOf(
                 "-nizkp", "$inputDir/dir/nizkp/1701230458",
@@ -17,17 +24,25 @@ class RunVerifierTest {
             )
         )
     }
-}
 
-/*
-Usage: RunMixnet options_list
-Options:
-    --type, -type -> Mix type (always required) { Value should be one of [shuffle, decrypt, mix] }
-    --input, -ciphertexts -> File of ciphertexts to be mixed (always required) { String }
-    --output, -plaintexts -> Output file after mixing and/or decryption (always required) { String }
-    --privInfo, -privInfo [privInfo.xml] -> Private info file { String }
-    --protInfo, -protInfo [protInfo.xml] -> Protocol info file { String }
-    --width, -width -> Number of ciphertexts per row (always required) { Int }
-    --auxsid, -auxsid [default] -> Auxiliary session identifier used to distinguish different sessions of the mix-net { String }
-    --help, -h -> Usage info
- */
+    @Test
+    fun testRunVerifierMinimal() {
+        val inputDir = "testVerifier"
+        RunVerifier.main(
+            arrayOf(
+                "-nizkp", "$inputDir/mix1",
+                "-protInfo", "$inputDir/protInfo.xml",
+                "-auxsid", "mix1",
+                "-width", "34",
+            )
+        )
+        RunVerifier.main(
+            arrayOf(
+                "-nizkp", "$inputDir/mix2",
+                "-protInfo", "$inputDir/protInfo.xml",
+                "-auxsid", "mix2",
+                "-width", "34",
+            )
+        )
+    }
+}

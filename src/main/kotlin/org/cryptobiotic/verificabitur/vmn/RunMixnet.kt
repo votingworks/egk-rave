@@ -4,26 +4,22 @@ import com.verificatum.arithm.PGroup
 import com.verificatum.arithm.PGroupElementArray
 import com.verificatum.eio.ExtIO
 import com.verificatum.protocol.Protocol
-import com.verificatum.protocol.ProtocolError
 import com.verificatum.protocol.ProtocolFormatException
 import com.verificatum.protocol.elgamal.ProtocolElGamal
 import com.verificatum.protocol.elgamal.ProtocolElGamalInterface
 import com.verificatum.protocol.elgamal.ProtocolElGamalInterfaceFactory
 import com.verificatum.protocol.mixnet.MixNetElGamal
 import com.verificatum.protocol.mixnet.MixNetElGamalInterfaceFactory
-import com.verificatum.ui.UI
 import com.verificatum.ui.tui.TConsole
 import com.verificatum.ui.tui.TextualUI
 import com.verificatum.util.SimpleTimer
-import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
+import org.cryptobiotic.verificabitur.reader.readByteTreeFromFile
 import java.io.File
 import kotlin.random.Random
-
-private val logger = KotlinLogging.logger("RunMixnet")
 
 class RunMixnet {
 
@@ -108,27 +104,15 @@ class RunMixnet {
     //
     //rave_print "[DONE] Shuffled encrypted ballots are in ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.json"
 
-    enum class MixnetType { shuffle, decrypt, mix }
-
     companion object {
 
         @JvmStatic
         fun main(args: Array<String>) {
             val parser = ArgParser("RunMixnet")
-            val type by parser.option(
-                ArgType.Choice<MixnetType>(),
-                shortName = "type",
-                description = "Mix type"
-            ).required()
             val input by parser.option(
                 ArgType.String,
-                shortName = "ciphertexts",
-                description = "File of ciphertexts to be mixed"
-            ).required()
-            val output by parser.option(
-                ArgType.String,
-                shortName = "plaintexts",
-                description = "Output file after mixing and/or decryption"
+                shortName = "in",
+                description = "File of ciphertexts to be shuffled"
             ).required()
             val privInfo by parser.option(
                 ArgType.String,
@@ -140,33 +124,25 @@ class RunMixnet {
                 shortName = "protInfo",
                 description = "Protocol info file"
             ).default("protInfo.xml")
-            val width by parser.option(
-                ArgType.Int,
-                shortName = "width",
-                description = "Number of ciphertexts per row"
-            ).required()
             val auxsid by parser.option(
                 ArgType.String,
-                shortName = "auxsid",
-                description = "Auxiliary session identifier used to distinguish different sessions of the mix-net"
+                shortName = "sessionId",
+                description = "session identifier for different sessions of the mix-net"
             )
 
             parser.parse(args)
 
             println(
                 "RunMixnet starting\n" +
-                        "   type= $type\n" +
                         "   input= $input\n" +
-                        "   output = $output\n" +
                         "   privInfo = $privInfo\n" +
                         "   protInfo = $protInfo\n" +
-                        "   width = $width\n" +
                         "   auxsid = $auxsid\n"
             )
 
             val mixnet = Mixnet(privInfo, protInfo)
-            val sessionId = mixnet.run(type, input, output, auxsid, width)
-            println("sessionId $sessionId complete successfully")
+            val sessionId = mixnet.run(input, auxsid)
+            println("sessionId $sessionId complete successfully\n")
         }
     }
 }
@@ -175,43 +151,34 @@ class RunMixnet {
 class Mixnet(privInfo: String, protInfo: String) {
     val elGamalRawInterface: ProtocolElGamalInterface
     val mixnet: MixNetElGamal
-    val timer = SimpleTimer()
+    var timer = SimpleTimer()
 
     init {
         val factory: ProtocolElGamalInterfaceFactory = MixNetElGamalInterfaceFactory()
-
-        try {
-            elGamalRawInterface = factory.getInterface("raw")
-        } catch (pfe: ProtocolFormatException) {
-            throw ProtocolError("Unable to get raw interface!", pfe)
-        }
+        elGamalRawInterface = factory.getInterface("raw")
 
         val protocolInfoFile = File(protInfo)
-
         val generator = factory.getGenerator(protocolInfoFile)
         val privateInfo = Protocol.getPrivateInfo(generator, File(privInfo))
         val protocolInfo = Protocol.getProtocolInfo(generator, protocolInfoFile)
 
-        val ui: UI = TextualUI(TConsole())
-        mixnet = MixNetElGamal(privateInfo, protocolInfo, ui)
+        mixnet = MixNetElGamal(privateInfo, protocolInfo, TextualUI(TConsole()))
     }
 
-    fun run(type: RunMixnet.MixnetType, input: String, output: String, auxsid: String?, width: Int): String {
+    fun run(input: String, auxsid: String?): String {
+        // read the input and find the width
+        val tree = readByteTreeFromFile(input)
+        require(tree.root.childs() == 2)
+        require(tree.root.child[0].childs() == tree.root.child[1].childs())
+        val width = tree.root.child[0].childs()
+        println("width = $width")
+
         val inputCiphFile = File(input)
-        val outputFile = File(output)
         val inputCiphertexts = readCiphertexts(mixnet, width, inputCiphFile)
         val sessionId = auxsid?: Random.nextInt(Int.MAX_VALUE).toString()
 
-        try {
-            when (type) {
-                RunMixnet.MixnetType.shuffle -> processShuffle(sessionId, mixnet, outputFile, width, inputCiphertexts)
-                RunMixnet.MixnetType.decrypt -> processDecrypt(sessionId, mixnet, outputFile, width, inputCiphertexts)
-                RunMixnet.MixnetType.mix -> processMixing(sessionId, mixnet, outputFile, width, inputCiphertexts)
-            }
-        } catch (t: Throwable) {
-            logger.error { "Exception= ${t.message} ${t.stackTraceToString()}" }
-            t.printStackTrace()
-        }
+        processShuffle(sessionId, mixnet, width, inputCiphertexts)
+
         return sessionId
     }
 
@@ -229,19 +196,18 @@ class Mixnet(privInfo: String, protInfo: String) {
     private fun processShuffle(
         auxsidString: String,
         mixnet: MixNetElGamal,
-        outputCiphFile: File,
         width: Int,
         inputCiphertexts: PGroupElementArray
     ) {
         prelude(mixnet)
 
-        if (mixnet.readBoolean(".keygen")) {
+        //if (mixnet.readBoolean(".keygen")) {
             mixnet.generatePublicKey()
-        }
+        //}
         val session = mixnet.getSession(auxsidString)
 
         val outputCiphertexts = session.shuffle(width, inputCiphertexts)
-        elGamalRawInterface.writeCiphertexts(outputCiphertexts, outputCiphFile)
+        // elGamalRawInterface.writeCiphertexts(outputCiphertexts, outputCiphFile)
         // inputCiphertexts.free();
         outputCiphertexts.free()
 
@@ -291,6 +257,7 @@ class Mixnet(privInfo: String, protInfo: String) {
     private fun prelude(mixnet: MixNetElGamal) {
         mixnet.startServers()
         mixnet.setup()
+        timer = SimpleTimer()
     }
 
     private fun postlude(
