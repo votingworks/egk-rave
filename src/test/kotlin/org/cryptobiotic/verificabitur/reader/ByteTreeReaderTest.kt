@@ -11,13 +11,13 @@ class ByteTreeReaderTest {
     val group = productionGroup()
 
     @Test
-    fun testReadRaveOutput() {
-        readByteTreeFromFile(raveDir + "after-mix-2-ciphertexts.raw", 2)
+    fun testReadRaveInput() {
+        readByteTreeFromFile(raveDir + "input-ciphertexts.raw", 1)
     }
 
     @Test
-    fun testReadRaveInput() {
-        readByteTreeFromFile(raveDir + "input-ciphertexts.raw", 1)
+    fun testReadRaveOutput() {
+        readByteTreeFromFile(raveDir + "after-mix-2-ciphertexts.raw", 2)
     }
 
     @Test
