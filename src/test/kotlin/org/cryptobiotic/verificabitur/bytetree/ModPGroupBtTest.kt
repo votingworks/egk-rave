@@ -1,13 +1,11 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
-import com.verificatum.arithm.ModPGroup
-import com.verificatum.crypto.RandomSource
 import org.cryptobiotic.verificabitur.normalize
-import org.cryptobiotic.verificabitur.testEquals
 import electionguard.core.*
 import electionguard.core.Base16.toHex
-import org.cryptobiotic.verificabitur.bytetree.readByteTree
-import org.junit.jupiter.api.Test
+import org.cryptobiotic.verificabitur.testEquals
+import kotlin.test.Test
+import kotlin.test.assertTrue
 
 val bt =
         "ModPGroup(random encoding, )::00000000020100000020636f6d2e766572696669636174756d2e61726974686d2e4d6f645047726f75700000000004" +
@@ -29,27 +27,33 @@ val bt =
                 "6925348db54d128fd99c14b457f883ec20112a75a6a0581d3d80a3b4ef09ec86f9552ffda1653f133aa2534983a6f31b0ee4697935a6b1ea2f75b85e7eba151ba48" +
                 "6094d68722b054633fec51ca3f29b31e77e317b178b6b9d8ae0f010000000400000000"
 
-fun readModPGroup(rs: RandomSource, certainty: Int): ModPGroup = readModPGroupNode(bt).makeModPGroup(rs, certainty)
-
 class ModPGroupReaderTest {
     @Test
     fun testReadModPGroup() {
-        val modPGroupNode = readModPGroupNode(bt)
-        println("\nreadModPGroup\n$modPGroupNode")
+        val tree = readByteTree(bt)
+        val modPGroup = tree.root.importModPGroup()
+        println("\nreadModPGroup\n$modPGroup")
 
         val egkGroup = productionGroup(PowRadixOption.HIGH_MEMORY_USE, ProductionMode.Mode4096)
         val egkConstants = egkGroup.constants
         println("egkConstants = $egkConstants")
 
-        testEquals(egkConstants.generator.toHex().lowercase(), normalize(modPGroupNode.generator))
-        testEquals(egkConstants.largePrime.toHex().lowercase(), normalize(modPGroupNode.modulus))
-        testEquals(egkConstants.smallPrime.toHex().lowercase(), normalize(modPGroupNode.order, 32))
+        testEquals(egkConstants.generator.toHex().lowercase(), normalize(modPGroup.generator))
+        testEquals(egkConstants.largePrime.toHex().lowercase(), normalize(modPGroup.modulus))
+        testEquals(egkConstants.smallPrime.toHex().lowercase(), normalize(modPGroup.order, 32))
     }
 
     @Test
-    fun testReadAsByteTree() {
-        val modPGroupNode = readByteTree(bt)
-        println("\n${modPGroupNode.show()}")
+    fun testRoundtrip() {
+        val tree = readByteTree(bt)
+        val modPGroup = tree.root.importModPGroup()
+        println("\nreadModPGroup\n$modPGroup")
+        println("\nroot\n${tree.root.show()}")
+
+        val node: ByteTreeNode = modPGroup.publish()
+        println("\npublish\n${node.show()}")
+
+        assertTrue(tree.root.array().contentEquals(node.array()))
     }
 }
 

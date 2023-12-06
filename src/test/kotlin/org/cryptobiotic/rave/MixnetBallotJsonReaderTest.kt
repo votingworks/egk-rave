@@ -9,9 +9,10 @@ import electionguard.core.*
 import electionguard.publish.makeConsumer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
-import org.junit.jupiter.api.Test
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 import java.nio.file.FileSystems
 import java.nio.file.Path
+import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -48,7 +49,7 @@ class MixnetBallotJsonReaderTest {
 
         val converted = readMixnetJsonBallots(group, "$topdir/vf/after-mix-2-ciphertexts.json")
         converted.forEachIndexed { idx, it ->
-            it.ciphertext.forEach { ciphertext ->
+            it.ciphertexts.forEach { ciphertext ->
                 val vote = decryptor.decrypt(ciphertext)
                 print("$vote,")
                 assertNotNull(vote)
@@ -79,7 +80,7 @@ class MixnetBallotJsonReaderTest {
         }
 
         mixnetBallots.forEachIndexed { idx, it ->
-            it.ciphertext.forEach { ciphertext ->
+            it.ciphertexts.forEach { ciphertext ->
                 val vote = decryptor.decrypt(ciphertext)
                 print("$vote,")
                 assertNotNull(vote)
@@ -118,13 +119,13 @@ class MixnetBallotJsonReaderTest {
 
         val mixnetBallots = readMixnetJsonBallots(group, mixnetFile)
         mixnetBallots.forEachIndexed { idx, it ->
-            val first = decryptor.decryptPep(it.ciphertext[0])!!
+            val first = decryptor.decryptPep(it.ciphertexts[0])!!
             val match = encryptedBallots[first.hashCode()]
             if (match == null) {
                 println("Match ballot ${idx + 1} NOT FOUND")
             } else {
                 println("Match ballot ${idx + 1} FOUND")
-                val result = mixnetPep.testEquivalent(match, MixnetBallot(it.ciphertext.subList(1, it.ciphertext.size)))
+                val result = mixnetPep.testEquivalent(match, MixnetBallot(it.ciphertexts.subList(1, it.ciphertexts.size)))
                 if (result is Err) println(result)
                 assertTrue(result is Ok)
             }

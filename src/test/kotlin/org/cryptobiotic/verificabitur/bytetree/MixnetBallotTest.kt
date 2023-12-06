@@ -1,12 +1,12 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
 import org.cryptobiotic.rave.CiphertextDecryptor
 import electionguard.core.*
-import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MixnetBallotReaderTest {
+class MixnetBallotTest {
     val topDir = "working1/vf"
     val nizkpDir1 = "$topDir/dir/nizkp/1701230437"
     val nizkpDir2 = "$topDir/dir/nizkp/1701230458"
@@ -64,7 +64,7 @@ class MixnetBallotReaderTest {
     }
 
     fun readMixnetBallot(inputFilename: String) {
-        val ballots = readMixnetBallot(inputFilename, group)
+        val ballots = org.cryptobiotic.verificabitur.bytetree.readMixnetBallotFromFile(inputFilename, group)
         assertEquals(13, ballots.size)
         ballots.forEach() {
             assertEquals(34, it.ciphertexts.size)

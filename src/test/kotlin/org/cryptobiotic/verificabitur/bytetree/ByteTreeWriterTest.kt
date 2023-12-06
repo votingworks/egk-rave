@@ -1,7 +1,6 @@
 package org.cryptobiotic.verificabitur.bytetree
 
-import org.cryptobiotic.verificabitur.reader.compareFiles
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class ByteTreeWriterTest {
     val raveDir = "src/test/data/rave/vf"
@@ -43,11 +42,11 @@ class ByteTreeWriterTest {
     fun roundtrip(dir: String, filename : String, maxDepth: Int = 10) {
         val pathname = "$dir/$filename"
         println("readPublicKeyFile filename = $pathname")
-        val root = readByteTreeFromFile(pathname)
-        println(root.show(maxDepth))
+        val tree = readByteTreeFromFile(pathname)
+        println(tree.show(maxDepth))
 
         val writeFile = "$testOutDir/${filename}.roundtrip"
-        writeByteTree(root, writeFile)
+        writeByteTreeToFile(tree.root, writeFile)
         val roundtrip = readByteTreeFromFile(writeFile)
         println(roundtrip.show(maxDepth))
 

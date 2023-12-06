@@ -12,6 +12,7 @@ import electionguard.core.fileReadText
 import electionguard.util.Indent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 @Serializable
 data class MixnetBallotJson(
@@ -33,20 +34,6 @@ data class MixnetBallotJson(
                     appendLine("$indent1]")
                 }
                 appendLine("$indent]")
-            }
-        }
-    }
-}
-
-data class MixnetBallot(
-    val ciphertext: List<ElGamalCiphertext>
-) {
-    fun removeFirst() : MixnetBallot = MixnetBallot(ciphertext.subList(1, ciphertext.size))
-
-    fun show(): String{
-        return buildString {
-            ciphertext.forEachIndexed { idx, it ->
-                appendLine("${idx+1} $it")
             }
         }
     }
@@ -88,7 +75,7 @@ fun List<MixnetBallot>.publishJson() : List<List<List<String>>> {
     this.forEach { mixnetBallot ->
         val pads = mutableListOf<String>()
         val data = mutableListOf<String>()
-        mixnetBallot.ciphertext.forEach {
+        mixnetBallot.ciphertexts.forEach {
             pads.add( it.pad.convertToMixnetString() )
             data.add( it.data.convertToMixnetString() )
         }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
-import org.cryptobiotic.rave.PepBallotSinkIF
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 /**
  * Compare encrypted ballots with mixnet output using PEP algorithm.
@@ -168,7 +168,7 @@ class RunMixnetPep {
 
             produce {
                 mixnetBallots.forEachIndexed { idx, mixnetBallot ->
-                    val first = decryptor.decryptPep(mixnetBallot.ciphertext[0])
+                    val first = decryptor.decryptPep(mixnetBallot.ciphertexts[0])
                     val match = encryptedBallots[first.hashCode()]
                     if (match == null) {
                         logger.warn { "Match ballot ${idx + 1} NOT FOUND" }

@@ -7,9 +7,8 @@ import electionguard.core.ElementModP
 import electionguard.core.productionGroup
 import electionguard.publish.makeConsumer
 import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
-import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertNotNull
 
 class ByteTreeReaderTest {

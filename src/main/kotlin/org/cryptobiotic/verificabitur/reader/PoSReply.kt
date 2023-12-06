@@ -2,7 +2,6 @@ package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
 import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
-import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 

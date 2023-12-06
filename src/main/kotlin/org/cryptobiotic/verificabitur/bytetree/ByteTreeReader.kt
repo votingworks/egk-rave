@@ -3,14 +3,16 @@ package org.cryptobiotic.verificabitur.bytetree
 import electionguard.core.Base16.fromHex
 import java.io.EOFException
 import java.io.File
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
-fun readByteTreeFromFile(filename : String) : ByteTreeRoot {
+fun readByteTreeFromFile(filename : String) : ByteTree {
     val file = File(filename) // gulp the entire file to a byte array
     val ba : ByteArray = file.readBytes()
     return readByteTree(ba)
 }
 
-fun readByteTree(marsh : String) : ByteTreeRoot {
+fun readByteTree(marsh : String) : ByteTree {
     var beforeDoubleColon : String? = null
     val byteArray : ByteArray? = if (marsh.contains("::")) {
         val frags = marsh.split("::")
@@ -36,7 +38,7 @@ fun readByteTree(marsh : String) : ByteTreeRoot {
 }
 
 val COLON = ':'.code.toByte()
-fun readByteTree(ba : ByteArray) : ByteTreeRoot {
+fun readByteTree(ba : ByteArray) : ByteTree {
     var split = -1
     for (idx in 0..100) {
         if (ba[idx] == COLON && ba[idx+1] == COLON) {

@@ -1,9 +1,6 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
 import electionguard.core.*
-import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
-import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
-import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 
 data class MixnetBallot(
@@ -21,14 +18,17 @@ data class MixnetBallot(
     }
 }
 
-// converts raw bytetrees to List<MixnetBallot>
-fun readMixnetBallot(filename: String, group: GroupContext): List<MixnetBallot> {
+fun readMixnetBallotFromFile(filename: String, group: GroupContext): List<MixnetBallot> {
     val tree = readByteTreeFromFile(filename)
     if (tree.className != null) println("class name = $tree.className")
+    return tree.root.importMixnetBallots(group)
+}
 
-    require(tree.root.child.size == 2)
-    val padChildren = tree.root.child[0].child
-    val dataChildren = tree.root.child[1].child
+// converts bytetrees to List<MixnetBallot>
+fun ByteTreeNode.importMixnetBallots(group: GroupContext) : List<MixnetBallot> {
+    require(this.child.size == 2)
+    val padChildren = this.child[0].child
+    val dataChildren = this.child[1].child
     require(padChildren.size == dataChildren.size)
     val ntexts = padChildren.size
 
@@ -60,19 +60,11 @@ fun readMixnetBallot(filename: String, group: GroupContext): List<MixnetBallot> 
         }
         ballots.add(MixnetBallot(ciphertexts))
     }
-
     return ballots
 }
 
-// inverse
-// readByteTreeFromFile = working/vf/dir/nizkp/98330134/proofs/Ciphertexts01.bt
-//  root n=2 size=458267
-//    root-1 n=34 size=229131
-//      root-1-1 n=13 size=6739
-//        root-1-1-1 n=513 size=518 content='0078d59129...1de6bda1b5' ...
-
-fun List<MixnetBallot>.makeByteTree(group: GroupContext): ByteTreeRoot {
-    val nballots = this.size
+// inverse of readMixnetBallot: // converts List<MixnetBallot> to ByteTreeNode
+fun List<MixnetBallot>.publish() : ByteTreeNode {
     val pads = mutableListOf<List<ElementModP>>() // nballots
     val datas = mutableListOf<List<ElementModP>>()
     var ctexts = 0
@@ -109,8 +101,7 @@ fun List<MixnetBallot>.makeByteTree(group: GroupContext): ByteTreeRoot {
     }
 
     val topnodes = listOf(makeNode("pad", ipads), makeNode("data", idatas))
-    val root = ByteTreeNode("root", isLeaf = false, 2, topnodes, null)
-    return ByteTreeRoot(root)
+    return makeNode("root", topnodes)
 }
 
 fun makeNode(name: String, listOflist : List<List<ElementModP>>): ByteTreeNode {
@@ -120,9 +111,9 @@ fun makeNode(name: String, listOflist : List<List<ElementModP>>): ByteTreeNode {
         val innerNodes = mutableListOf<ByteTreeNode>()
         inner.forEachIndexed { idx, it ->
             val bytes = it.byteArray()
-            innerNodes.add( ByteTreeNode("outerName-$idx", isLeaf = true, bytes.size, emptyList(), bytes))
+            innerNodes.add( makeLeaf("outerName-$idx", bytes))
         }
-        outerNodes.add (ByteTreeNode(outerName, isLeaf = false, innerNodes.size, innerNodes, null))
+        outerNodes.add(makeNode(outerName, innerNodes))
     }
-    return ByteTreeNode(name, isLeaf = false, outerNodes.size, outerNodes, null)
+    return makeNode(name, outerNodes)
 }

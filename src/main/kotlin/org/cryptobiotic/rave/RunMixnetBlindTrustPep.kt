@@ -17,7 +17,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.cryptobiotic.rave.PepBallotSinkIF
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 /**
  * Compare encrypted ballots with local trustees CLI. Multithreaded: each ballot gets its own coroutine.
@@ -179,7 +179,7 @@ class RunMixnetBlindTrustPep {
 
             produce {
                 mixnetBallots.forEachIndexed { idx, mixnetBallot ->
-                    val first = decryptor.decryptPep(mixnetBallot.ciphertext[0])
+                    val first = decryptor.decryptPep(mixnetBallot.ciphertexts[0])
                     val match = encryptedBallots[first.hashCode()]
                     if (match == null) {
                         println("Match ballot ${idx + 1} NOT FOUND")

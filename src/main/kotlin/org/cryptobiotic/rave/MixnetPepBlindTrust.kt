@@ -7,6 +7,7 @@ import electionguard.ballot.EncryptedBallot
 import electionguard.core.*
 import electionguard.util.ErrorMessages
 import electionguard.util.Stats
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 /** PepBlindTrust adapted for mixnet. */
 class MixnetPepBlindTrust(
@@ -242,7 +243,7 @@ fun makeRatioMixnetBallot(
     for (contest1 in ballot1.contests) {
         val ratioSelections = mutableListOf<EncryptedBallot.Selection>()
         for (selection1 in contest1.selections) {
-            val ratio = makeCiphertextRatio(selection1.encryptedVote, ballot2.ciphertext[count++])
+            val ratio = makeCiphertextRatio(selection1.encryptedVote, ballot2.ciphertexts[count++])
             ratioSelections.add(selection1.copy(encryptedVote = ratio))
         }
         ratioContests.add(contest1.copy(selections = ratioSelections))

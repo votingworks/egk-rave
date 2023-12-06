@@ -1,9 +1,7 @@
 package org.cryptobiotic.verificabitur.bytetree
 
 import electionguard.core.productionGroup
-import org.cryptobiotic.verificabitur.reader.MixnetPublicKey
-import org.cryptobiotic.verificabitur.reader.readPublicKey
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class ByteTreeReaderTest {
     val demoDir = "/home/stormy/dev/verificatum-vmn-3.1.0-full/verificatum-vmn-3.1.0/demo/mixnet/mydemodir/"
@@ -37,7 +35,7 @@ class ByteTreeReaderTest {
     fun testReadPublicKeyFile() {
         val filename = raveDir + "publickey.raw"
         println("readPublicKeyFile filename = ${filename}")
-        val mpk: MixnetPublicKey = readPublicKey(filename, group)
+        val mpk: MixnetPublicKey = readPublicKeyFromFile(filename, group)
         println( "MixnetPublicKey = \n${mpk}")
     }
 
@@ -115,7 +113,7 @@ class ByteTreeReaderTest {
     }
 }
 
-private fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTreeRoot {
+private fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTree {
     println("readByteTreeFromFile = ${filename}")
     val tree = readByteTreeFromFile(filename)
     println(tree.show(maxDepth))

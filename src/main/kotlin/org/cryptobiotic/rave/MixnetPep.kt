@@ -9,6 +9,7 @@ import electionguard.core.*
 import electionguard.decrypt.DecryptorDoerre
 import electionguard.util.ErrorMessages
 import electionguard.util.Stats
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 /** PepBlindTrust adapted for mixnet, using DecryptorDoerre. */
 class MixnetPep(

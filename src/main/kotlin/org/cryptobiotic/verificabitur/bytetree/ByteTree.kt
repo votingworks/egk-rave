@@ -3,7 +3,7 @@ package org.cryptobiotic.verificabitur.bytetree
 import electionguard.core.Base16.toHex
 import electionguard.util.Indent
 
-class ByteTreeRoot(
+class ByteTree(
     val root: ByteTreeNode,
     val beforeDoubleColon: String? = null,
 ) {
@@ -49,7 +49,7 @@ class ByteTreeNode(
         }
     }
 
-    fun show(indent: Indent, maxDepth: Int = 100): String {
+    fun show(indent: Indent = Indent(2), maxDepth: Int = 100): String {
         return if (indent.level > maxDepth && childs() > 11) "" else {
             return buildString {
                 append("${indent}$name n=$n nbytes=$totalBytes ")
@@ -64,14 +64,27 @@ class ByteTreeNode(
     }
 }
 
-fun makeTree(ba: ByteArray, beforeDoubleColon : String? = null): ByteTreeRoot {
-    val root = makeNode("root", ba, 0)
-    return ByteTreeRoot(root, beforeDoubleColon)
+fun makeLeaf(name: String, content: ByteArray) = ByteTreeNode(name, true, content.size, emptyList(), content)
+fun makeNode(name: String, childs: List<ByteTreeNode>) = ByteTreeNode(name, false, childs.size, childs, null)
+
+fun findNodeByName(node: ByteTreeNode, want: String): ByteTreeNode? {
+    if (node.name == want) return node
+    var found : ByteTreeNode? = null
+    node.child.forEach {
+        val got = findNodeByName(it, want)
+        if (got != null) found = got
+    }
+    return found
 }
 
-fun makeEmptyTree(beforeDoubleColon: String? = null, error : String? = null): ByteTreeRoot {
+fun makeTree(ba: ByteArray, beforeDoubleColon : String? = null): ByteTree {
+    val root = makeNode("root", ba, 0)
+    return ByteTree(root, beforeDoubleColon)
+}
+
+fun makeEmptyTree(beforeDoubleColon: String? = null, error : String? = null): ByteTree {
     val root = makeNode("root", ByteArray(0), 0)
-    val result =  ByteTreeRoot(root, beforeDoubleColon)
+    val result =  ByteTree(root, beforeDoubleColon)
     result.error = error
     return result
 }

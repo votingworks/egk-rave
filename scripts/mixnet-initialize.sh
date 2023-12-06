@@ -30,7 +30,7 @@ echo "${GROUP}" | sed "s/[^:]*:://g" > ./_tmp_group_description
 GROUP_JSON=`vbt -hex ./_tmp_group_description`
 rm ./_tmp_group_description
 
-# generate verificatum configuration
+rave_print "generate verificatum configuration"
 MIXER_NAME="MergeMixer"
 
 vmni -prot -sid "FOO" -name ${MIXER_NAME} -nopart 1 -thres 1 \
@@ -42,26 +42,24 @@ vmni -party -name "${MIXER_NAME}" \
      -hint localhost:4041 \
      ${VERIFICATUM_WORKSPACE}/localProtInfo.xml ${VERIFICATUM_WORKSPACE}/privInfo.xml ${VERIFICATUM_WORKSPACE}/protInfo.xml
 
-# extract public key from ElectionGuard
+rave_print "extract public key from ElectionGuard"
 Y=`cat ${ELECTION_PARAMS} | jq -r '.joint_public_key' | tr '[:upper:]' '[:lower:]'`
 
-# convert pk to Verificatum JSON
+rave_print "convert pk to Verificatum JSON"
 echo ${GROUP_JSON} | jq --arg g "00$G" --arg y "00$Y" '[., [$g, $y]]' > ${VERIFICATUM_WORKSPACE}/publickey.json
 
-# convert to Verificatum RAW
-vmnc -e -pkey ${VERIFICATUM_WORKSPACE}/protInfo.xml -ini seqjson -outi raw ${VERIFICATUM_WORKSPACE}/publickey.json ${VERIFICATUM_WORKSPACE}/publickey.raw
+rave_print "convert to Verificatum Bytetree"
 
-# import it
-vmn -setpk ${VERIFICATUM_WORKSPACE}/privInfo.xml ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/publickey.raw
-
-rave_print "... Set up the mixnet, now loading encrypted ballots ..."
+vmnc -e -pkey ${VERIFICATUM_WORKSPACE}/protInfo.xml -ini seqjson -outi raw ${VERIFICATUM_WORKSPACE}/publickey.json ${VERIFICATUM_WORKSPACE}/publickey.bt
+rave_print "import it"
+vmn -setpk ${VERIFICATUM_WORKSPACE}/privInfo.xml ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/publickey.bt
 
 # TODO
-WIDTH=34
+# WIDTH=34
 
 # convert ciphertexts to V raw format
-vmnc -e -ciphs -width "${WIDTH}"  -ini seqjson -outi raw \
-     ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/input-ciphertexts.json ${VERIFICATUM_WORKSPACE}/input-ciphertexts.raw
+# vmnc -e -ciphs -width "${WIDTH}"  -ini seqjson -outi raw \
+#      ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/input-ciphertexts.json ${VERIFICATUM_WORKSPACE}/input-ciphertexts.raw
 
 
 rave_print "[DONE] Initialize verificatum mixnet in directory ${VERIFICATUM_WORKSPACE}"
