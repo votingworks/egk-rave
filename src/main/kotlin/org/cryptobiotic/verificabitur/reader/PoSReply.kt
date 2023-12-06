@@ -1,6 +1,9 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 
 // Algorithm 19
@@ -48,7 +51,7 @@ fun readPoSReply(filename : String, group : GroupContext) : PoSReply {
     return PoSReply(kA, kB, kC, kD, kE, kF)
 }
 
-fun readElementModQList(node: ByteTreeRoot.Node, group : GroupContext) : List<ElementModQ>{
+fun readElementModQList(node: ByteTreeNode, group : GroupContext) : List<ElementModQ>{
     if (node.isLeaf) {
         val commit = ProductionElementModQ(BigInteger(1, node.content), group as ProductionGroupContext)
         return listOf(commit)

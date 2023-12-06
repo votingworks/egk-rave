@@ -1,6 +1,9 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 
 data class PermutationCommitment(
@@ -21,7 +24,7 @@ fun readPermutationCommitment(filename : String, group : GroupContext) : Permuta
     return PermutationCommitment(readElementModPList(tree.root, group))
 }
 
-fun readElementModPList(node: ByteTreeRoot.Node, group : GroupContext) : List<ElementModP>{
+fun readElementModPList(node: ByteTreeNode, group : GroupContext) : List<ElementModP>{
     val n = node.childs()
     val commitments = mutableListOf<ElementModP>()
     repeat(n) { idx ->

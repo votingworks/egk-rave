@@ -6,6 +6,7 @@ import org.cryptobiotic.verificabitur.normalize
 import org.cryptobiotic.verificabitur.testEquals
 import electionguard.core.*
 import electionguard.core.Base16.toHex
+import org.cryptobiotic.verificabitur.bytetree.readByteTree
 import org.junit.jupiter.api.Test
 
 val bt =

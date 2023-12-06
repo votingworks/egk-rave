@@ -1,4 +1,4 @@
-package electionguard.cli
+package org.cryptobiotic.rave
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.unwrap
@@ -6,8 +6,6 @@ import com.github.michaelbull.result.unwrap
 import electionguard.ballot.EncryptedBallot
 import electionguard.core.*
 import electionguard.publish.*
-import electionguard.rave.*
-import electionguard.rave.PepBallotSinkIF
 import electionguard.util.sigfig
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -19,6 +17,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.cryptobiotic.rave.PepBallotSinkIF
 
 /**
  * Compare encrypted ballots with local trustees CLI. Multithreaded: each ballot gets its own coroutine.
@@ -136,7 +135,7 @@ class RunMixnetBlindTrustPep {
             )
             val mixnetBallots = readMixnetJsonBallots(group, mixnetFile)
 
-            val sink = RaveIO(outputDir, group).pepBallotSink()
+            val sink = RaveIO(outputDir, group, false).pepBallotSink()
 
             try {
                 runBlocking {

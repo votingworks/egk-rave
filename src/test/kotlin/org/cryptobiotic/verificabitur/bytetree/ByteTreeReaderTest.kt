@@ -1,13 +1,14 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
 import electionguard.core.productionGroup
+import org.cryptobiotic.verificabitur.reader.MixnetPublicKey
+import org.cryptobiotic.verificabitur.reader.readPublicKey
 import org.junit.jupiter.api.Test
 
 class ByteTreeReaderTest {
     val demoDir = "/home/stormy/dev/verificatum-vmn-3.1.0-full/verificatum-vmn-3.1.0/demo/mixnet/mydemodir/"
-    val raveDir = "working/vf/"
-    val nizkpDir = "working/vf/dir/nizkp/98330134/proofs/"
-    val bbDir    = "working/vf/httproot/1/MixNetElGamal.FOO/ShufflerElGamal.SEG/ShufflerElGamalSession.FOO.98330134/PoSTW.1/BullBoard.BullBoard/"
+    val raveDir = "src/test/data/rave/vf/"
+    val nizkpDir = "working1/vf/dir/nizkp/1701230437/proofs/"
     val group = productionGroup()
 
     @Test
@@ -48,6 +49,13 @@ class ByteTreeReaderTest {
     }
 
     @Test
+    fun testProblem() {
+        val filename = raveDir + "publickey.raw"
+        readByteTreeFromFileOld(filename, 1)
+        readByteTreeFromFile(filename, 1)
+    }
+
+    @Test
     fun testReadPermutationCommitment1() {
         readByteTreeFromFile(nizkpDir + "PermutationCommitment01.bt", 10)
     }
@@ -67,16 +75,6 @@ class ByteTreeReaderTest {
         readByteTreeFromFile(nizkpDir + "PoSReply01.bt", 10)
     }
 
-    /////////////////////////////////////////////
-
-
-    @Test
-    fun testReadBBProofs() {
-        readByteTreeFromFile(bbDir + "Commitment", 1)
-        readByteTreeFromFile(bbDir + "PermutationCommitment", 1)
-        readByteTreeFromFile(bbDir + "Reply", 1)
-    }
-
     @Test
     fun testReadZkpProofCiphertexts() {
         readByteTreeFromFile(nizkpDir + "Ciphertexts01.bt", 2)
@@ -86,14 +84,26 @@ class ByteTreeReaderTest {
 
     @Test
     fun testReadDemoProofs() {
-        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/Ciphertexts01.bt", 1)
-        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PermutationCommitment01.bt", 1)
-        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PoSCommitment01.bt", 1)
+        readByteTreeFromFile(
+            demoDir + "Party01/export/default/proofs/Ciphertexts01.bt",
+            1
+        )
+        readByteTreeFromFile(
+            demoDir + "Party01/export/default/proofs/PermutationCommitment01.bt",
+            1
+        )
+        readByteTreeFromFile(
+            demoDir + "Party01/export/default/proofs/PoSCommitment01.bt",
+            1
+        )
     }
 
     @Test
     fun testReadPosCommitment3() {
-        readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PoSCommitment01.bt", 10)
+        readByteTreeFromFile(
+            demoDir + "Party01/export/default/proofs/PoSCommitment01.bt",
+            10
+        )
     }
 
     @Test
@@ -105,9 +115,16 @@ class ByteTreeReaderTest {
     }
 }
 
-fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTreeRoot {
+private fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTreeRoot {
     println("readByteTreeFromFile = ${filename}")
     val tree = readByteTreeFromFile(filename)
+    println(tree.show(maxDepth))
+    return tree
+}
+
+private fun readByteTreeFromFileOld(filename : String, maxDepth: Int) : ByteTreeRootOld {
+    println("readByteTreeFromFileOld = ${filename}")
+    val tree = readByteTreeOldFromFile(filename)
     println(tree.show(maxDepth))
     return tree
 }

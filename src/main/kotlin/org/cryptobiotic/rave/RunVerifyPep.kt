@@ -1,11 +1,10 @@
-package electionguard.cli
+package org.cryptobiotic.rave
 
 import electionguard.core.*
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.required
 
-import electionguard.rave.*
 import electionguard.publish.*
 import electionguard.util.ErrorMessages
 import electionguard.util.sigfig
@@ -61,7 +60,7 @@ class RunVerifyPep {
 
             val verifier = VerifierPep(group, record.extendedBaseHash()!!, ElGamalPublicKey(record.jointPublicKey()!!))
 
-            val raveIO = RaveIO(pepBallotDir, group)
+            val raveIO = RaveIO(pepBallotDir, group, false)
             runBlocking {
                 val pepJobs = mutableListOf<Job>()
                 val ballotProducer = produceBallots(raveIO)

@@ -1,4 +1,4 @@
-package com.cryptobiotic.rave
+package org.cryptobiotic.rave
 
 import electionguard.core.GroupContext
 import electionguard.core.createDirectories

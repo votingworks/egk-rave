@@ -1,4 +1,4 @@
-package com.cryptobiotic.rave
+package org.cryptobiotic.rave
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.unwrap
@@ -6,8 +6,9 @@ import electionguard.core.ElGamalCiphertext
 import electionguard.core.ElementModP
 import electionguard.core.productionGroup
 import electionguard.publish.makeConsumer
-import org.cryptobiotic.verificabitur.reader.ByteTreeRoot
-import org.cryptobiotic.verificabitur.reader.readByteTreeFromFile
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
 
@@ -115,7 +116,7 @@ class ByteTreeReaderTest {
         }
     }
 
-    fun convertByteTree(node: ByteTreeRoot.Node): PTree {
+    fun convertByteTree(node: ByteTreeNode): PTree {
         val ptree = PTree(node.name, convertContent(node.content))
         node.child.forEach { child ->
             ptree.children.add(convertByteTree(child))

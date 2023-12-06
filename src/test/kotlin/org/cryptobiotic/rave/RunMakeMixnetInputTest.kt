@@ -1,4 +1,4 @@
-package electionguard.cli
+package org.cryptobiotic.rave
 
 import kotlin.test.Test
 

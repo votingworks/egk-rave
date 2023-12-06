@@ -1,4 +1,4 @@
-package com.cryptobiotic.rave
+package org.cryptobiotic.rave
 
 import com.github.michaelbull.result.unwrap
 import electionguard.core.*

@@ -1,4 +1,4 @@
-package electionguard.cli
+package org.cryptobiotic.rave
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.unwrap
@@ -7,7 +7,6 @@ import electionguard.core.GroupContext
 import electionguard.core.getSystemTimeInMillis
 import electionguard.core.productionGroup
 import electionguard.publish.makeConsumer
-import electionguard.rave.*
 import electionguard.util.sigfig
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.cli.ArgParser
@@ -19,6 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
+import org.cryptobiotic.rave.PepBallotSinkIF
 
 /**
  * Compare encrypted ballots with mixnet output using PEP algorithm.
@@ -125,7 +125,7 @@ class RunMixnetPep {
             )
             val mixnetBallots = readMixnetJsonBallots(group, mixnetFile)
 
-            val sink = RaveIO(outputDir, group).pepBallotSink()
+            val sink = RaveIO(outputDir, group, false).pepBallotSink()
             try {
                 runBlocking {
                     val outputChannel = Channel<BallotPep>()

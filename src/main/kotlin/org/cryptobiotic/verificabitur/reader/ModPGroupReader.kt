@@ -3,6 +3,8 @@ package org.cryptobiotic.verificabitur.reader
 import com.verificatum.arithm.LargeInteger
 import com.verificatum.arithm.ModPGroup
 import com.verificatum.crypto.RandomSource
+import org.cryptobiotic.verificabitur.bytetree.readByteTree
+import org.cryptobiotic.verificabitur.bytetree.readInt
 import java.math.BigInteger
 
 data class ModPGroupNode(val wtf: BigInteger, val modulus : BigInteger, val order : BigInteger, val generator : BigInteger, val encoding : Int, ) {

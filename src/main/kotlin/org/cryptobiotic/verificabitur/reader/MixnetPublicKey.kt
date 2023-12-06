@@ -5,6 +5,9 @@ import electionguard.core.ElementModP
 import electionguard.core.GroupContext
 import electionguard.core.ProductionElementModP
 import electionguard.core.ProductionGroupContext
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeRoot
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 
 // public key y = g^x
@@ -25,7 +28,7 @@ fun readPublicKey(filename : String, group : GroupContext) : MixnetPublicKey {
     return tree.root.child[1].makePublicKey(group)
 }
 
-fun ByteTreeRoot.Node.makePublicKey(group : GroupContext) : MixnetPublicKey {
+fun ByteTreeNode.makePublicKey(group : GroupContext) : MixnetPublicKey {
     require(this.child.size == 2)
 
     val node0 = this.child[0]
@@ -40,7 +43,7 @@ fun ByteTreeRoot.Node.makePublicKey(group : GroupContext) : MixnetPublicKey {
     return MixnetPublicKey(key1, key2)
 }
 
-fun ByteTreeRoot.Node.checkGroup(group : GroupContext) {
+fun ByteTreeNode.checkGroup(group : GroupContext) {
     require(this.child.size == 2)
 
     val node0 = this.child[0]

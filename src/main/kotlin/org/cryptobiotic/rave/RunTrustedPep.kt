@@ -1,16 +1,15 @@
-package electionguard.cli
+package org.cryptobiotic.rave
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.unwrap
 
 import electionguard.ballot.EncryptedBallot
+import electionguard.cli.RunTrustedTallyDecryption
 import electionguard.core.*
 import electionguard.decrypt.DecryptingTrusteeIF
 import electionguard.decrypt.Guardians
 import electionguard.publish.*
-import electionguard.rave.*
-import electionguard.rave.PepBallotSinkIF
 import electionguard.util.sigfig
 import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
@@ -22,6 +21,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.cryptobiotic.rave.PepBallotSinkIF
 
 private val logger = KotlinLogging.logger("RunTrustedPep")
 
@@ -127,7 +127,7 @@ class RunTrustedPep {
                 decryptingTrustees,
             )
 
-            val sink = RaveIO(outputDir, group).pepBallotSink()
+            val sink = RaveIO(outputDir, group, false).pepBallotSink()
             try {
                 runBlocking {
                     val outputChannel = Channel<BallotPep>()
