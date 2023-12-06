@@ -1,7 +1,7 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class PermutationCommitmentTest {
     val nizkpDir = "working/vf/dir/nizkp/98330134/proofs"

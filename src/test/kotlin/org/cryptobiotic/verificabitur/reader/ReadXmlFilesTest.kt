@@ -1,14 +1,9 @@
 package org.cryptobiotic.verificabitur.reader
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 class ReadXmlFilesTest {
     val demoDir = "/home/stormy/dev/verificatum-vmn-3.1.0-full/verificatum-vmn-3.1.0/demo/mixnet/mydemodir/"
-
-    @Test
-    fun testReadRaveProtocolInfo() {
-
-    }
 
     @Test
     fun testReadProtocolInfo() {

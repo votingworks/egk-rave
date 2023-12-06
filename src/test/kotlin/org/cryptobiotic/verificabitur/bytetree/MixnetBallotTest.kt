@@ -1,13 +1,13 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
+import org.cryptobiotic.rave.CiphertextDecryptor
 import electionguard.core.*
-import electionguard.rave.CiphertextDecryptor
-import org.junit.jupiter.api.Test
 import java.io.File
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class MixnetBallotReaderTest {
-    val topDir = "working/vf"
+class MixnetBallotTest {
+    val topDir = "working1/vf"
     val nizkpDir1 = "$topDir/dir/nizkp/1701230437"
     val nizkpDir2 = "$topDir/dir/nizkp/1701230458"
     val egDir = "working/eg"
@@ -64,7 +64,7 @@ class MixnetBallotReaderTest {
     }
 
     fun readMixnetBallot(inputFilename: String) {
-        val ballots = readMixnetBallot(inputFilename, group)
+        val ballots = org.cryptobiotic.verificabitur.bytetree.readMixnetBallotFromFile(inputFilename, group)
         assertEquals(13, ballots.size)
         ballots.forEach() {
             assertEquals(34, it.ciphertexts.size)
@@ -86,17 +86,17 @@ class MixnetBallotReaderTest {
         }
     }
 
-    fun compareFiles(file1 : String, file2 : String) {
-        val ba1 = File(file1).readBytes()
-        val ba2 = File(file2).readBytes()
-        val same = ba1.contentEquals(ba2)
-        println("$file1 (${ba1.contentHashCode()}) \n$file2 (${ba2.contentHashCode()}) \n same = $same \n")
-    }
-
     fun showFileHash(file1 : String) {
         val ba1 = File(file1).readBytes()
         println("$file1 (${ba1.contentHashCode()})")
     }
+}
+
+fun compareFiles(file1 : String, file2 : String) {
+    val ba1 = File(file1).readBytes()
+    val ba2 = File(file2).readBytes()
+    val same = ba1.contentEquals(ba2)
+    println("$file1 (${ba1.contentHashCode()}) \n$file2 (${ba2.contentHashCode()}) \n same = $same \n")
 }
 
 /*

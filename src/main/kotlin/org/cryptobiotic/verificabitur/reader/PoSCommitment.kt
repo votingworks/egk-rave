@@ -1,6 +1,8 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
+import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import java.math.BigInteger
 
 // Algorithm 19
@@ -48,7 +50,7 @@ fun readPoSCommitment(filename : String, group : GroupContext) : PoSCommitment {
     return PoSCommitment(B, Ap, Bp, Cp, Dp, Fp)
 }
 
-fun readCiphertextList(node: ByteTreeRoot.Node, group : GroupContext) : List<ElGamalCiphertext>{
+fun readCiphertextList(node: ByteTreeNode, group : GroupContext) : List<ElGamalCiphertext>{
     require(node.childs() == 2)
     val pads = node.child[0]
     val datas = node.child[1]

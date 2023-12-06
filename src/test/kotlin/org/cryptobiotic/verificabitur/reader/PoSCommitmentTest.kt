@@ -1,7 +1,7 @@
 package org.cryptobiotic.verificabitur.reader
 
 import electionguard.core.*
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PoSCommitmentTest {

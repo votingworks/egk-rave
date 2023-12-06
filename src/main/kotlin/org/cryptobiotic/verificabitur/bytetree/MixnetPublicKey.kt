@@ -1,65 +1,19 @@
-package org.cryptobiotic.verificabitur.reader
+package org.cryptobiotic.verificabitur.bytetree
 
+import electionguard.core.*
 import electionguard.core.Base16.toHex
-import electionguard.core.ElementModP
-import electionguard.core.GroupContext
-import electionguard.core.ProductionElementModP
-import electionguard.core.ProductionGroupContext
 import java.math.BigInteger
 
 // public key y = g^x
-data class MixnetPublicKey(val g : ElementModP, val publicKey : ElementModP) {
+data class MixnetPublicKey(val g : ElementModP, val publicKey : ElementModP, val encoding: Int) {
     override fun toString(): String {
-        return  "   key1 = ${this.g.toHex()}\n" +
-                "   key2 = ${this.publicKey.toHex()}\n"
+        return  "        g = ${this.g.toHex()}\n" +
+                "publicKey = ${this.publicKey.toHex()}\n" +
+                " encoding = ${this.encoding}\n"
     }
 }
 
-fun readPublicKey(filename : String, group : GroupContext) : MixnetPublicKey {
-    val tree = readByteTreeFromFile(filename)
-    require(tree.root.child.size == 2)
-    // group is the first node
-    tree.root.child[0].checkGroup(group)
-
-    // MixnetPublicKey is the second node
-    return tree.root.child[1].makePublicKey(group)
-}
-
-fun ByteTreeRoot.Node.makePublicKey(group : GroupContext) : MixnetPublicKey {
-    require(this.child.size == 2)
-
-    val node0 = this.child[0]
-    require(node0.child.size == 0) // this is g, the generator.
-
-    val node1 = this.child[1]
-    require(node1.child.size == 0) // K = g^x
-
-    val key1 = ProductionElementModP(BigInteger(1, node0.content), group as ProductionGroupContext)
-    val key2 = ProductionElementModP(BigInteger(1, node1.content), group)
-
-    return MixnetPublicKey(key1, key2)
-}
-
-fun ByteTreeRoot.Node.checkGroup(group : GroupContext) {
-    require(this.child.size == 2)
-
-    val node0 = this.child[0]
-    require(node0.child.size == 0)  // TODO wtf?
-
-    val node1 = this.child[1]
-    require(node1.child.size == 4)
-
-    val ps : String = node1.child[0].content!!.toHex().substring(2)
-    require(ps == group.constants.largePrime.toHex())
-
-    val qs : String = node1.child[1].content!!.toHex().substring(2)
-    require(qs == group.constants.smallPrime.toHex())
-
-    val gs : String = node1.child[2].content!!.toHex().substring(2)
-    require(gs == group.constants.generator.toHex())
-}
-
-/* also see ModPGroupReaderTest
+/*
 readPublicKeyFile filename = working/vf/publickey.raw
 root n=2 size=2176
   root-1 n=2 size=1130
@@ -73,3 +27,32 @@ root n=2 size=2176
     root-2-1 n=513 size=518 content='0036036fed214f3b50dc566d3a312fe4131fee1c2bce6d02ea39b477ac05f7f885f38cfe77a7e45acf4029114c4d7a9bfe058bf2f995d2479d3dda618ffd910d3c4236ab2cfdd783a5016f7465cf59bbf45d24a22f130f2d04fe93b2d58bb9c1d1d27fc9a17d2af49a779f3ffbdca22900c14202ee6c99616034be35cbcdd3e7bb7996adfe534b63cca41e21ff5dc778ebb1b86c53bfbe99987d7aea0756237fb40922139f90a62f2aa8d9ad34dff799e33c857a6468d001acf3b681db87dc4242755e2ac5a5027db81984f033c4d178371f273dbb4fcea1e628c23e52759bc7765728035cea26b44c49a65666889820a45c33dd37ea4a1d00cb62305cd541be1e8a92685a07012b1a20a746c3591a2db3815000d2aaccfe43dc49e828c1ed7387466afd8e4bf1935593b2a442eec271c50ad39f733797a1ea11802a2557916534662a6b7e9a9e449a24c8cff809e79a4d806eb681119330e6c57985e39b200b4893639fdfdea49f76ad1acd997eba13657541e79ec57437e504eda9dd011061516c643fb30d6d58afccd28b73feda29ec12b01a5eb86399a593a9d5f450de39cb92962c5ec6925348db54d128fd99c14b457f883ec20112a75a6a0581d3d80a3b4ef09ec86f9552ffda1653f133aa2534983a6f31b0ee4697935a6b1ea2f75b85e7eba151ba486094d68722b054633fec51ca3f29b31e77e317b178b6b9d8ae0f'
     root-2-2 n=513 size=518 content='00f670bac355c05a2e3c2c67c5f4952ab7c086cae24df857984892866b7524e538f7b6ba2217aff9ffeeac56e7029be8005d6e8c0ffbe84eda5b7a3f8051bc7511de4182a6ff1bce306b5d5164441fa00c8ff2a77ecbea4ddda59816765dd13504624e12f95c5dd7dc31bda23c573181083a37409380daaefc693e6a17049777140124c39aa842e5762244e68ec06edf8af90aadf18bcb3f2816b50802c2cfcefd71514ddf19a785659f74b02d361e8b29b51870b66afc10173baabc4e385699590d57239ab9e57d3d5e7c81c65f4c3332c5085c3d170aa39b98fe4fb8072ff2d6f0981ec594c2abec25229015ea58ac3dbe7ec77eb528262e89147cd5a270e90e8ed45f4c4e6d14b430888d9cde7448887e6cbdac83dcf8341846382dbf976acf3de02e285685f0c6d38767524ad1075d830aa573d8f6de95c504d5313fef173def32a3430aa709ff78401f3c8af8003337ce3ac2df7f255d816110f76bbf61c0a7d48c8f5304031edcd414b8a54187c2ae8f3180947f6005c12ca37b82bdf96240ac4cfea9b07cfed696f8ec09a90784a55d02982313f507494628f93d6f6c8d011ef9207ef88041e79ce1a29499b90e5992b2cce58424de32496e838209aff5d27ef227777c5d298852988081ac304e36b2c9a793f7cef8c3747a75043c270c2b5c2013185a1e0eb6a0cbab7e216a3f070c80b0667135d51514bf4f424535f7'
  */
+fun ByteTreeNode.importMixnetPublicKey(group: GroupContext) : MixnetPublicKey {
+    val mgroup = this.child[0].importModPGroup()
+    val keys = this.child[1]
+    val gbi = BigInteger(1, keys.child[0].content)
+    val kpi = BigInteger(1, keys.child[1].content)
+
+    val g = ProductionElementModP(gbi, group as ProductionGroupContext)
+    val publicKey = ProductionElementModP(kpi, group)
+    return MixnetPublicKey(g, publicKey, mgroup.encoding)
+}
+
+fun MixnetPublicKey.publish() : ByteTreeNode {
+    val modPGroupBt = g.context.makeModPGroupBt(this.encoding)
+
+    return makeNode("MixnetPublicKey",
+        listOf(
+            modPGroupBt.publish(),
+            makeNode("group", listOf(
+                makeLeaf("g", this.g.byteArray().normalize(513)),
+                makeLeaf("publicKey", this.publicKey.byteArray().normalize(513)))
+            )
+        )
+    )
+}
+
+fun readPublicKeyFromFile(filename : String, group : GroupContext) : MixnetPublicKey {
+    val tree = readByteTreeFromFile(filename)
+     return tree.root.importMixnetPublicKey(group)
+}
