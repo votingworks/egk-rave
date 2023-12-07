@@ -5,6 +5,7 @@ import electionguard.core.*
 import electionguard.core.Base16.toHex
 import org.cryptobiotic.verificabitur.testEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 val bt =
@@ -28,6 +29,8 @@ val bt =
                 "6094d68722b054633fec51ca3f29b31e77e317b178b6b9d8ae0f010000000400000000"
 
 class ModPGroupReaderTest {
+    val group = productionGroup()
+
     @Test
     fun testReadModPGroup() {
         val tree = readByteTree(bt)
@@ -54,6 +57,19 @@ class ModPGroupReaderTest {
         println("\npublish\n${node.show()}")
 
         assertTrue(tree.root.array().contentEquals(node.array()))
+    }
+
+    @Test
+    fun testMakeModPGroupBt() {
+        val modPGroup = group.makeModPGroupBt(0)
+        println("\nreadModPGroup\n$modPGroup")
+        val btree = modPGroup.publish()
+        println("\nbt\n${btree.show()}")
+        val hex = btree.hex()
+        println("\nhex\n$hex")
+
+        val expect = bt.substringAfter("::")
+        assertEquals(expect, hex)
     }
 }
 

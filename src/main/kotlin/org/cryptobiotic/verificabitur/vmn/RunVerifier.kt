@@ -30,15 +30,15 @@ class RunVerifier {
             val parser = ArgParser("RunVerifier")
             val inputDir by parser.option(
                 ArgType.String,
-                shortName = "nizkp",
-                description = "Directory containing nizkp proofs (eg dir/nizkp/auxsid)"
+                shortName = "shuffle",
+                description = "Directory containing public shuffle info"
             ).required()
             val protInfo by parser.option(
                 ArgType.String,
                 shortName = "protInfo",
                 description = "Protocol info file"
             ).default("protInfo.xml")
-            val auxsid by parser.option(
+            val sessionId by parser.option(
                 ArgType.String,
                 shortName = "auxsid",
                 description = "Auxiliary session identifier used to distinguish different sessions of the mix-net"
@@ -47,7 +47,7 @@ class RunVerifier {
                 ArgType.Int,
                 shortName = "width",
                 description = "Number of ciphertexts per row"
-            ).required()
+            ).required() // TODO get rid of
 
             parser.parse(args)
 
@@ -56,21 +56,21 @@ class RunVerifier {
                         "   inputDir= $inputDir\n" +
                         "   protInfo = $protInfo\n" +
                         "   width = $width\n" +
-                        "   auxsid = $auxsid\n"
+                        "   sessionId = $sessionId\n"
             )
 
-            val verifier = Verifier(inputDir, protInfo, auxsid, width, true)
-            val sessionId = verifier.verify()
+            val verifier = Verifier(inputDir, protInfo, sessionId, width, true)
+            verifier.verify()
             println("sessionId $sessionId complete successfully")
         }
     }
 }
 
 
-class Verifier(nizkp: String, protInfo: String, val auxsid: String, val width: Int, val verbose: Boolean) {
+class Verifier(shuffleDir: String, protInfo: String, val auxsid: String, val width: Int, val verbose: Boolean) {
     val elGamalRawInterface: ProtocolElGamalInterface
     val verifier: MixNetElGamalVerifyFiatShamir
-    val nizkpDir = File(nizkp)
+    val shuffleDirFile = File(shuffleDir)
 
     init {
         val factory: ProtocolElGamalInterfaceFactory = MixNetElGamalInterfaceFactory()
@@ -101,12 +101,12 @@ class Verifier(nizkp: String, protInfo: String, val auxsid: String, val width: I
     fun verify() {
         var timer = SimpleTimer()
 
-        verifier.verify(nizkpDir, auxsid, width)
+        verifier.verify(shuffleDirFile, auxsid, width)
 
         if (verbose) {
             val nizkpSize: Long
             try {
-                nizkpSize = ExtIO.fileSize(nizkpDir)
+                nizkpSize = ExtIO.fileSize(shuffleDirFile)
             } catch (ioe: IOException) {
                 val e = "Unable to determine communicated bytes!"
                 throw ProtocolError(e, ioe)

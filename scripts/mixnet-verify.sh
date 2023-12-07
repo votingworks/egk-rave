@@ -11,30 +11,27 @@ fi
 
 rave_print "Verifying shuffled ballots..."
 
-EG_WORKSPACE="${WORKSPACE_DIR}/eg"
-CONSTANTS="${EG_WORKSPACE}/constants.json"
-ELECTION_PARAMS="${EG_WORKSPACE}/election_initialized.json"
-
-VERIFICATUM_WORKSPACE="${WORKSPACE_DIR}/vf"
+EG_BB="${WORKSPACE_DIR}/bb/eg"
+VF_BB="${WORKSPACE_DIR}/bb/vf"
 
 CLASSPATH="build/libs/rave-mixnet-all.jar"
 
-# shuffle once
 rave_print "... verify mix1 shuffle ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.rave.RunVerifier \
-    -nizkp $input/mix1 \
-    -protInfo $input/protInfo.xml \
-    -sessionId mix1
+  org.cryptobiotic.verificabitur.vmn.RunVerifier \
+    -protInfo ${VF_BB}/protocolInfo.xml \
+    -shuffle ${VF_BB}/mix1 \
+    --sessionId mix1 \
+    -width 34
 
-# shuffle twice
 rave_print "... verify mix2 shuffle ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.rave.RunVerifier \
-    -nizkp $input/mix2 \
-    -protInfo $input/protInfo.xml \
-    -sessionId mix2
+  org.cryptobiotic.verificabitur.vmn.RunVerifier \
+    -protInfo ${VF_BB}/protocolInfo.xml \
+    -shuffle ${VF_BB}/mix2 \
+    --sessionId mix2 \
+    -width 34
 
 rave_print "[DONE] Verifying shuffled ballots"

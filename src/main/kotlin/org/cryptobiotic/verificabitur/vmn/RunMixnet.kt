@@ -202,7 +202,7 @@ class Mixnet(privInfo: String, protInfo: String) {
         prelude(mixnet)
 
         //if (mixnet.readBoolean(".keygen")) {
-            mixnet.generatePublicKey()
+        //    mixnet.generatePublicKey()
         //}
         val session = mixnet.getSession(auxsidString)
 

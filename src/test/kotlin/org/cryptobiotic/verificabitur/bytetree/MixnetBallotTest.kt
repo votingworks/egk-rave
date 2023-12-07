@@ -14,6 +14,11 @@ class MixnetBallotTest {
     val group = productionGroup()
 
     @Test
+    fun testMixnetInpute() {
+        readMixnetBallot("working/vf/inputCiphertexts.bt")
+    }
+
+    @Test
     fun testMixnetRawBallotTop() {
         readMixnetBallot("$topDir/input-ciphertexts.raw")
         readMixnetBallot("$topDir/after-mix-1-ciphertexts.raw")
@@ -64,11 +69,12 @@ class MixnetBallotTest {
     }
 
     fun readMixnetBallot(inputFilename: String) {
-        val ballots = org.cryptobiotic.verificabitur.bytetree.readMixnetBallotFromFile(inputFilename, group)
+        val ballots = readMixnetBallotFromFile(inputFilename, group)
         assertEquals(13, ballots.size)
         ballots.forEach() {
             assertEquals(34, it.ciphertexts.size)
         }
+        println(" width = ${ballots[0].ciphertexts.size}")
 
         // the real test is if we can decrypt them
         val decryptor = CiphertextDecryptor(

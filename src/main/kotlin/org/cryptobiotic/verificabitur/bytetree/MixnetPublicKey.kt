@@ -1,11 +1,10 @@
 package org.cryptobiotic.verificabitur.bytetree
 
 import electionguard.core.*
-import electionguard.core.Base16.toHex
 import java.math.BigInteger
 
 // public key y = g^x
-data class MixnetPublicKey(val g : ElementModP, val publicKey : ElementModP, val encoding: Int) {
+data class MixnetPublicKey(val g : ElementModP, val publicKey : ElementModP, val encoding: Int = 0) {
     override fun toString(): String {
         return  "        g = ${this.g.toHex()}\n" +
                 "publicKey = ${this.publicKey.toHex()}\n" +
