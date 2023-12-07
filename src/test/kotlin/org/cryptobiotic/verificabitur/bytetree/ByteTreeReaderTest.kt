@@ -11,7 +11,7 @@ class ByteTreeReaderTest {
 
     @Test
     fun testReadRaveInput() {
-        readByteTreeFromFile(raveDir + "input-ciphertexts.raw", 1)
+        readByteTreeFromFile("working/vf/inputCiphertexts.bt", 2)
     }
 
     @Test
@@ -21,7 +21,7 @@ class ByteTreeReaderTest {
 
     @Test
     fun testReadRavePublicKeyFile() {
-        val filename = raveDir + "publickey.raw"
+        val filename = "working/bb/vf/mix1/FullPublicKey.bt"
         println("readPublicKeyFile filename = ${filename}")
         val root = readByteTreeFromFile(filename)
         println(root.show(10))

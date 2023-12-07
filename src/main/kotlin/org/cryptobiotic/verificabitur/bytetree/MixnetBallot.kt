@@ -110,7 +110,7 @@ fun makeNode(name: String, listOflist : List<List<ElementModP>>): ByteTreeNode {
         val outerName = "root-$idx"
         val innerNodes = mutableListOf<ByteTreeNode>()
         inner.forEachIndexed { idx, it ->
-            val bytes = it.byteArray()
+            val bytes = it.byteArray().normalize(513) // heres where we add the extra leading 0 byte
             innerNodes.add( makeLeaf("outerName-$idx", bytes))
         }
         outerNodes.add(makeNode(outerName, innerNodes))

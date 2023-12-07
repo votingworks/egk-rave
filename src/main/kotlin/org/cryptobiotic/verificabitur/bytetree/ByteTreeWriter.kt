@@ -1,5 +1,6 @@
 package org.cryptobiotic.verificabitur.bytetree
 
+import electionguard.core.Base16.toHex
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 import java.io.OutputStream
@@ -23,6 +24,11 @@ fun ByteTreeNode.array(): ByteArray {
     val bos = ByteArrayOutputStream()
     this.write(bos)
     return bos.toByteArray()
+}
+
+fun ByteTreeNode.hex(): String {
+    val ba = this.array()
+    return ba.toHex().lowercase()
 }
 
 fun intToBytes(i: Int): ByteArray =

@@ -23,20 +23,20 @@ CLASSPATH="build/libs/rave-mixnet-all.jar"
 rave_print "... now shuffling once ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.rave.RunMixnet \
-    -in $input/input-ciphertexts.bt \
-    -privInfo $input/privInfo.xml \
-    -protInfo $input/protInfo.xml \
+  org.cryptobiotic.verificabitur.vmn.RunMixnet \
+    -in ${VERIFICATUM_WORKSPACE}/inputCiphertexts.bt \
+    -privInfo ${VERIFICATUM_WORKSPACE}/privateInfo.xml \
+    -protInfo ${VERIFICATUM_WORKSPACE}/protocolInfo.xml \
     -sessionId mix1
 
 # shuffle twice
 rave_print "... now shuffling twice ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.rave.RunMixnet \
-    -in $working/nizkp/mix1/ShuffledCiphertexts.bt \
-    -privInfo $input/privInfo.xml \
-    -protInfo $input/protInfo.xml \
+  org.cryptobiotic.verificabitur.vmn.RunMixnet \
+    -in ${VERIFICATUM_WORKSPACE}/Party01/nizkp/mix1/ShuffledCiphertexts.bt \
+    -privInfo ${VERIFICATUM_WORKSPACE}/privateInfo.xml \
+    -protInfo ${VERIFICATUM_WORKSPACE}/protocolInfo.xml \
     -sessionId mix2
 
-rave_print "[DONE] Shuffled encrypted ballots are in ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.json"
+rave_print "[DONE] Shuffling encrypted ballots"

@@ -1,12 +1,17 @@
 package org.cryptobiotic.verificabitur.reader
 
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
 import nl.adaptivity.xmlutil.serialization.XML
 import nl.adaptivity.xmlutil.serialization.XmlElement
 import nl.adaptivity.xmlutil.serialization.XmlSerialName
 import java.io.File
+import java.io.FileOutputStream
 
+// implementation("io.ktor:ktor-serialization-kotlinx-xml:$ktor_version")
+// implementation("io.ktor:ktor-serialization-kotlinx-protobuf:$ktor_version")
 fun readPrivateInfo(filename : String ) : PrivateInfo {
     println("readPrivateInfo filename = ${filename}")
 
@@ -22,6 +27,16 @@ fun readPrivateInfo(filename : String ) : PrivateInfo {
     val info : PrivateInfo = xml.decodeFromString(serializer, text)
     println("$info")
     return info
+}
+
+@OptIn(InternalSerializationApi::class)
+fun PrivateInfo.writePrivateInfo(filename : String ) {
+    val xml = XML { indent = 2 }
+    val serializer = this::class.serializer() as KSerializer<Any>
+    val text = xml.encodeToString(serializer, this, null)
+    FileOutputStream(filename).use { out ->
+        out.write(text.toByteArray())
+    }
 }
 
 enum class HttpType { internal, external}

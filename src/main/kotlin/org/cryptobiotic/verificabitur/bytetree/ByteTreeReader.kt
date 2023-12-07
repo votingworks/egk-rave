@@ -28,12 +28,15 @@ fun readByteTree(marsh : String) : ByteTree {
 
     val result = makeTree(byteArray, beforeDoubleColon)
 
+    /*
     if (result.root.child.size == 2) {
         val classNode = result.root.child[0]
         if (classNode.content != null) { // && is UTF
             result.className = String(classNode.content)
         }
     }
+
+     */
     return result
 }
 
@@ -60,12 +63,15 @@ fun readByteTree(ba : ByteArray) : ByteTree {
     }
 
     val result = makeTree(byteArray, beforeDoubleColon)
+    /*
     if (result.root.child.size == 2) {
         val classNode = result.root.child[0]
         if (classNode.content != null) {
             result.className = String(classNode.content)
         }
     }
+
+     */
     return result
 }
 
