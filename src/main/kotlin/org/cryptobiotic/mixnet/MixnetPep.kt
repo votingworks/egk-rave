@@ -12,7 +12,7 @@ import electionguard.util.Stats
 import org.cryptobiotic.pep.*
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
-/** PepBlindTrust adapted for mixnet, using DecryptorDoerre. */
+/** PepTrusted adapted for mixnet, using DecryptorDoerre. Not used in favor of MixnetPepBlindTrust. */
 class MixnetPep(
     val group: GroupContext,
     val extendedBaseHash: UInt256,

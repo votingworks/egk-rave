@@ -18,7 +18,7 @@ data class MixnetBallot(
     }
 }
 
-fun readMixnetBallotFromFile(filename: String, group: GroupContext): List<MixnetBallot> {
+fun readMixnetBallotFromFile(group: GroupContext, filename: String): List<MixnetBallot> {
     val tree = readByteTreeFromFile(filename)
     if (tree.className != null) println("class name = $tree.className")
     return tree.root.importMixnetBallots(group)

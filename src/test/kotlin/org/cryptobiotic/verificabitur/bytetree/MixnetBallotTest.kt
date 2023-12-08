@@ -1,6 +1,6 @@
 package org.cryptobiotic.verificabitur.bytetree
 
-import org.cryptobiotic.mixnet.CiphertextDecryptor
+import org.cryptobiotic.pep.CiphertextDecryptor
 import electionguard.core.*
 import java.io.File
 import kotlin.test.Test
@@ -45,7 +45,7 @@ class MixnetBallotTest {
     }
 
     fun readMixnetBallot(inputFilename: String) {
-        val ballots = readMixnetBallotFromFile(inputFilename, group)
+        val ballots = readMixnetBallotFromFile(group, inputFilename)
         assertEquals(13, ballots.size)
         ballots.forEach() {
             assertEquals(34, it.ciphertexts.size)

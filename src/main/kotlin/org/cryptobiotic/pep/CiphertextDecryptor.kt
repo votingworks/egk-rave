@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.pep
 
 import com.github.michaelbull.result.*
 import electionguard.ballot.ElectionInitialized
@@ -9,7 +9,6 @@ import electionguard.publish.makeConsumer
 import electionguard.publish.makeTrusteeSource
 import electionguard.util.ErrorMessages
 import electionguard.util.mergeErrorMessages
-import org.cryptobiotic.pep.PepWithProof
 
 /**
  * Shortcut to decryption when you're willing to compute the secret key, eg for testing.

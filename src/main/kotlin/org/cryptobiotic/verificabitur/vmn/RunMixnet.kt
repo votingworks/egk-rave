@@ -17,9 +17,9 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
-import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
-import java.io.File
 import kotlin.random.Random
+import java.io.File
+import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 
 class RunMixnet {
 

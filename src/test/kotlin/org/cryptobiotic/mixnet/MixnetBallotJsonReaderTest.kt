@@ -9,6 +9,7 @@ import electionguard.core.*
 import electionguard.publish.makeConsumer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import org.cryptobiotic.pep.CiphertextDecryptor
 import org.cryptobiotic.pep.PepTrustee
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 import java.nio.file.FileSystems
@@ -18,8 +19,10 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class MixnetBallotJsonReaderTest {
-    val topdir = "src/commonTest/data/rave"
-    // val topdir = "/home/stormy/tmp/working"
+    val workingDir = "src/test/data/working/vf"
+    val bbDir = "src/test/data/working/bb/vf"
+
+    val topdir = "src/commonTest/data/mixnetInput"
 
     var fileSystem = FileSystems.getDefault()
     var fileSystemProvider = fileSystem.provider()
@@ -28,14 +31,14 @@ class MixnetBallotJsonReaderTest {
 
     @Test
     fun testMixnetInput() {
-        val result = readMixnetBallotArray("$topdir/vf/input-ciphertexts.json")
+        val result = readMixnetBallotJson("$topdir/inputCiphertexts.json")
         assertTrue(result is Ok)
         println(result.unwrap().show())
     }
 
     @Test
     fun testMixnetOutput() {
-        val result = readMixnetBallotArray("$topdir/vf/after-mix-2-ciphertexts.json")
+        val result = readMixnetBallotJson("$topdir/vf/after-mix-2-ciphertexts.json")
         assertTrue(result is Ok)
         println(result.unwrap().show())
     }
@@ -133,7 +136,7 @@ class MixnetBallotJsonReaderTest {
         }
     }
 
-    private fun readMixnetBallotArray(filename: String): Result<MixnetBallotJson, String> =
+    private fun readMixnetBallotJson(filename: String): Result<MixnetBallotJson, String> =
         try {
             val path = Path.of(filename)
             val mixnetBallotJson : MixnetBallotJson
@@ -142,17 +145,6 @@ class MixnetBallotJsonReaderTest {
                 mixnetBallotJson = MixnetBallotJson(lists)
             }
             Ok(mixnetBallotJson)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Err(e.message ?: "readMixnetInput on $filename error")
-        }
-
-    private fun readMixnetBallotWrapped(filename: String): Result<MixnetBallotJson, String> =
-        try {
-            val text = fileReadText(filename)
-            val wrap = "{ \"wtf\": $text }"
-            var mixnetInput: MixnetBallotJson = jsonReader.decodeFromString<MixnetBallotJson>(wrap)
-            Ok(mixnetInput)
         } catch (e: Exception) {
             e.printStackTrace()
             Err(e.message ?: "readMixnetInput on $filename error")

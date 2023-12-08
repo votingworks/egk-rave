@@ -15,8 +15,7 @@ import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.atomic.AtomicInteger
 
-
-/** Run election record verification CLI. */
+/** Run Pep verification CLI. */
 class RunVerifyPep {
 
     companion object {

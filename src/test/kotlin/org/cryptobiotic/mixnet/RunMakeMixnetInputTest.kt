@@ -5,12 +5,13 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class RunMakeMixnetInputTest {
+    val bbDir = "src/test/data/working/bb"
 
     @Test
     fun testMakeMixnetInputJson() {
         RunMakeMixnetInput.main(
             arrayOf(
-                "-eballots", "working/bb/encryptedBallots",
+                "-eballots", "$bbDir/encryptedBallots",
                 "--outputFile", "testOut/inputCiphertexts.json",
                 "-json"
             )
@@ -21,7 +22,7 @@ class RunMakeMixnetInputTest {
     fun testMakeMixnetInput() {
         RunMakeMixnetInput.main(
             arrayOf(
-                "-eballots", "working/bb/encryptedBallots",
+                "-eballots", "$bbDir/encryptedBallots",
                 "--outputFile", "testOut/inputCiphertexts.bt",
             )
         )
