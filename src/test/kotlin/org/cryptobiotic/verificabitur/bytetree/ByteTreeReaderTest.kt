@@ -5,18 +5,20 @@ import kotlin.test.Test
 
 class ByteTreeReaderTest {
     val demoDir = "/home/stormy/dev/verificatum-vmn-3.1.0-full/verificatum-vmn-3.1.0/demo/mixnet/mydemodir/"
-    val raveDir = "src/test/data/rave/vf/"
-    val nizkpDir = "working1/vf/dir/nizkp/1701230437/proofs/"
+    val inputDir = "src/test/data/working/vf"
+    val protInfo = "$inputDir/protocolInfo.xml"
+    val nizkpDir = "$inputDir/Party01/nizkp/mix2/proofs"
     val group = productionGroup()
 
     @Test
     fun testReadRaveInput() {
-        readByteTreeFromFile("working/vf/inputCiphertexts.bt", 2)
+        readByteTreeFromFile("$inputDir/inputCiphertexts.bt", 2)
     }
 
     @Test
     fun testReadRaveOutput() {
-        readByteTreeFromFile(raveDir + "after-mix-2-ciphertexts.raw", 2)
+        readByteTreeFromFile("$inputDir/Party01/nizkp/mix1/ShuffledCiphertexts.bt", 2)
+        readByteTreeFromFile("$inputDir/Party01/nizkp/mix2/ShuffledCiphertexts.bt", 2)
     }
 
     @Test
@@ -33,7 +35,7 @@ class ByteTreeReaderTest {
     //         "F670BAC355C05A2E3C2C67C5F4952AB7C086CAE24DF857984892866B7524E538F7B6BA2217AFF9FFEEAC56E7029BE8005D6E8C0FFBE84EDA5B7A3F8051BC7511DE4182A6FF1BCE306B5D5164441FA00C8FF2A77ECBEA4DDDA59816765DD13504624E12F95C5DD7DC31BDA23C573181083A37409380DAAEFC693E6A17049777140124C39AA842E5762244E68EC06EDF8AF90AADF18BCB3F2816B50802C2CFCEFD71514DDF19A785659F74B02D361E8B29B51870B66AFC10173BAABC4E385699590D57239AB9E57D3D5E7C81C65F4C3332C5085C3D170AA39B98FE4FB8072FF2D6F0981EC594C2ABEC25229015EA58AC3DBE7EC77EB528262E89147CD5A270E90E8ED45F4C4E6D14B430888D9CDE7448887E6CBDAC83DCF8341846382DBF976ACF3DE02E285685F0C6D38767524AD1075D830AA573D8F6DE95C504D5313FEF173DEF32A3430AA709FF78401F3C8AF8003337CE3AC2DF7F255D816110F76BBF61C0A7D48C8F5304031EDCD414B8A54187C2AE8F3180947F6005C12CA37B82BDF96240AC4CFEA9B07CFED696F8EC09A90784A55D02982313F507494628F93D6F6C8D011EF9207EF88041E79CE1A29499B90E5992B2CCE58424DE32496E838209AFF5D27EF227777C5D298852988081AC304E36B2C9A793F7CEF8C3747A75043C270C2B5C2013185A1E0EB6A0CBAB7E216A3F070C80B0667135D51514BF4F424535F7",
     @Test
     fun testReadPublicKeyFile() {
-        val filename = raveDir + "publickey.raw"
+        val filename = "$inputDir/publicKey.bt"
         println("readPublicKeyFile filename = ${filename}")
         val mpk: MixnetPublicKey = readPublicKeyFromFile(filename, group)
         println( "MixnetPublicKey = \n${mpk}")
@@ -41,44 +43,38 @@ class ByteTreeReaderTest {
 
     @Test
     fun testReadZkpProofs() {
-        readByteTreeFromFile(nizkpDir + "PermutationCommitment01.bt", 1)
-        readByteTreeFromFile(nizkpDir + "PoSCommitment01.bt", 1)
-        readByteTreeFromFile(nizkpDir + "PoSReply01.bt", 1)
-    }
-
-    @Test
-    fun testProblem() {
-        val filename = raveDir + "publickey.raw"
-        readByteTreeFromFileOld(filename, 1)
-        readByteTreeFromFile(filename, 1)
+        readByteTreeFromFile("$nizkpDir/PermutationCommitment01.bt", 1)
+        readByteTreeFromFile("$nizkpDir/PoSCommitment01.bt", 1)
+        readByteTreeFromFile("$nizkpDir/PoSReply01.bt", 1)
     }
 
     @Test
     fun testReadPermutationCommitment1() {
-        readByteTreeFromFile(nizkpDir + "PermutationCommitment01.bt", 10)
+        readByteTreeFromFile("$nizkpDir/PermutationCommitment01.bt", 10)
     }
 
     @Test
     fun testReadPosCommitment2() {
-        readByteTreeFromFile(nizkpDir + "PoSCommitment01.bt", 10)
+        readByteTreeFromFile("$nizkpDir/PoSCommitment01.bt", 10)
     }
+
+    @Test
+    fun testReadPoSReply() {
+        readByteTreeFromFile("$nizkpDir/PoSReply01.bt", 10)
+    }
+
+    @Test
+    fun testReadZkpProofCiphertexts() {
+        readByteTreeFromFile("$nizkpDir/Ciphertexts01.bt", 2)
+    }
+
+    /////////////////////////////////////////////
+
 
     @Test
     fun testReadPermutationCommitment3() {
         readByteTreeFromFile(demoDir + "Party01/export/default/proofs/PermutationCommitment01.bt", 1)
     }
-
-    @Test
-    fun testReadPoSReply() {
-        readByteTreeFromFile(nizkpDir + "PoSReply01.bt", 10)
-    }
-
-    @Test
-    fun testReadZkpProofCiphertexts() {
-        readByteTreeFromFile(nizkpDir + "Ciphertexts01.bt", 2)
-    }
-
-    /////////////////////////////////////////////
 
     @Test
     fun testReadDemoProofs() {

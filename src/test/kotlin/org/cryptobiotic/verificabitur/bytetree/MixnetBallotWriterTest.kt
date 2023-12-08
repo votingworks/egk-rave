@@ -1,14 +1,18 @@
 package org.cryptobiotic.verificabitur.bytetree
 
-import org.cryptobiotic.rave.CiphertextDecryptor
+import org.cryptobiotic.mixnet.CiphertextDecryptor
 import electionguard.core.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MixnetBallotWriterTest {
-    val topDir = "working1/vf"
-    val nizkpDir1 = "$topDir/dir/nizkp/1701230437"
-    val nizkpDir2 = "$topDir/dir/nizkp/1701230458"
+    val inputDir = "src/test/data/working/vf"
+    val bbDir = "src/test/data/working/bb/vf"
+    val nizkpDir = "$inputDir/Party01/nizkp"
+    val proofsDir = "$inputDir/Party01/nizkp/mix2/proofs"
+
+    val nizkpDir1 = "$nizkpDir/mix1"
+    val nizkpDir2 = "$nizkpDir/mix2"
     val egDir = "working/eg"
     val group = productionGroup()
 
@@ -16,7 +20,7 @@ class MixnetBallotWriterTest {
 
     @Test
     fun testMixnetRoundtrip() {
-        roundtrip(topDir, "input-ciphertexts.raw")
+        roundtrip(inputDir, "inputCiphertexts.bt")
         roundtrip(nizkpDir1,"ShuffledCiphertexts.bt")
         roundtrip(nizkpDir2,"ShuffledCiphertexts.bt")
     }

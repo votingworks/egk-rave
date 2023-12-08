@@ -18,12 +18,6 @@ class GroupCompareTest {
         println("group constants = ${group.constants}")
     }
 
-    @Test
-    fun testVcrGroup() {
-        val group = ModPGroup(4096)
-        println("ModPGroup = ${group}")
-    }
-
     // This is to get the string representation of the ModPGroup equivilent to EG group.
     @Test
     fun testModPGroupGen() {
