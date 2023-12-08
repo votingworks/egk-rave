@@ -1,71 +1,47 @@
 package org.cryptobiotic.verificabitur.bytetree
 
-import org.cryptobiotic.rave.CiphertextDecryptor
+import org.cryptobiotic.mixnet.CiphertextDecryptor
 import electionguard.core.*
 import java.io.File
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class MixnetBallotTest {
-    val topDir = "working1/vf"
-    val nizkpDir1 = "$topDir/dir/nizkp/1701230437"
-    val nizkpDir2 = "$topDir/dir/nizkp/1701230458"
-    val egDir = "working/eg"
+    val inputDir = "src/test/data/working/vf"
+    val bbDir = "src/test/data/working/bb/vf"
+    val nizkpDir = "$inputDir/Party01/nizkp"
+    val proofsDir = "$inputDir/Party01/nizkp/mix2/proofs"
+
+    val egDir = "src/test/data/working/eg"
     val group = productionGroup()
 
     @Test
     fun testMixnetInpute() {
-        readMixnetBallot("working/vf/inputCiphertexts.bt")
+        readMixnetBallot("$inputDir/inputCiphertexts.bt")
     }
 
     @Test
-    fun testMixnetRawBallotTop() {
-        readMixnetBallot("$topDir/input-ciphertexts.raw")
-        readMixnetBallot("$topDir/after-mix-1-ciphertexts.raw")
-        readMixnetBallot("$topDir/after-mix-2-ciphertexts.raw")
-    }
-
-    @Test
-    fun testMixnetRawBallotNizkp1() {
-        readMixnetBallot("$nizkpDir1/Ciphertexts.bt")
-        readMixnetBallot("$nizkpDir1/ShuffledCiphertexts.bt")
-        readMixnetBallot("$nizkpDir1/proofs/Ciphertexts01.bt")
-    }
-
-    @Test
-    fun testMixnetRawBallotNizkp2() {
-        readMixnetBallot("$nizkpDir2/Ciphertexts.bt")
-        readMixnetBallot("$nizkpDir2/ShuffledCiphertexts.bt")
-        readMixnetBallot("$nizkpDir2/proofs/Ciphertexts01.bt")
+    fun testMixnetRawBallots() {
+        readMixnetBallot("$nizkpDir/mix1/Ciphertexts.bt")
+        readMixnetBallot("$nizkpDir/mix2/Ciphertexts.bt")
+        readMixnetBallot("$nizkpDir/mix1/ShuffledCiphertexts.bt")
+        readMixnetBallot("$nizkpDir/mix2/ShuffledCiphertexts.bt")
     }
 
     @Test
     fun showFiles() {
-        showFileHash("$topDir/input-ciphertexts.raw")
-        showFileHash("$nizkpDir1/Ciphertexts.bt")
+        showFileHash("$inputDir/inputCiphertexts.bt")
         println()
-        showFileHash("$nizkpDir1/ShuffledCiphertexts.bt")
-        showFileHash("$nizkpDir1/proofs/Ciphertexts01.bt")
-        showFileHash("$topDir/after-mix-1-ciphertexts.raw")
-        showFileHash("$nizkpDir2/Ciphertexts.bt")
+        showFileHash("$nizkpDir/mix1/Ciphertexts.bt")
+        showFileHash("$nizkpDir/mix2/Ciphertexts.bt")
+        showFileHash("$nizkpDir/mix1/ShuffledCiphertexts.bt")
+        showFileHash("$nizkpDir/mix2/ShuffledCiphertexts.bt")
         println()
 
-        showFileHash("$nizkpDir2/ShuffledCiphertexts.bt")
-        showFileHash("$nizkpDir2/proofs/Ciphertexts01.bt")
-        showFileHash("$topDir/after-mix-2-ciphertexts.raw")
-    }
-
-
-    @Test
-    fun compareFiles() {
-        compareFiles("$topDir/input-ciphertexts.raw", "$nizkpDir1/Ciphertexts.bt")
-        compareFiles("$topDir/input-ciphertexts.raw", "$nizkpDir1/Ciphertexts.bt")
-
-        compareFiles("$topDir/after-mix-1-ciphertexts.raw", "$nizkpDir1/proofs/Ciphertexts01.bt")
-        compareFiles("$topDir/after-mix-2-ciphertexts.raw", "$nizkpDir2/proofs/Ciphertexts01.bt")
-
-        compareFiles("$topDir/after-mix-1-ciphertexts.raw", "$nizkpDir1/ShuffledCiphertexts.bt")
-        compareFiles("$topDir/after-mix-2-ciphertexts.raw", "$nizkpDir2/ShuffledCiphertexts.bt")
+        showFileHash("$bbDir/mix1/Ciphertexts.bt")
+        showFileHash("$bbDir/mix2/Ciphertexts.bt")
+        showFileHash("$bbDir/mix1/ShuffledCiphertexts.bt")
+        showFileHash("$bbDir/mix2/ShuffledCiphertexts.bt")
     }
 
     fun readMixnetBallot(inputFilename: String) {

@@ -5,7 +5,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PoSReplyTest {
-    val nizkpDir = "working/vf/dir/nizkp/98330134/proofs"
+    val inputDir = "src/test/data/working/vf"
+    val nizkpDir = "$inputDir/Party01/nizkp/mix2/proofs"
     val demoDir = "/home/stormy/dev/verificatum-vmn-3.1.0-full/verificatum-vmn-3.1.0/demo/mixnet/mydemodir"
     val group = productionGroup()
 

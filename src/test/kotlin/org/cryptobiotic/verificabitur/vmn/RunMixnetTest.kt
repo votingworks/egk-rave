@@ -3,7 +3,7 @@ package org.cryptobiotic.verificabitur.vmn
 import kotlin.test.Test
 
 class RunMixnetTest {
-    val working = "working/vf"
+    val working = "src/test/data/working/vf"
 
     @Test
     fun testRunMixnet() {
@@ -15,7 +15,7 @@ class RunMixnetTest {
                 "-sessionId", "mix1",
             )
         )
-        /*
+
         RunMixnet.main(
             arrayOf(
                 "-in", "$working/nizkp/mix1/ShuffledCiphertexts.bt",
@@ -24,7 +24,5 @@ class RunMixnetTest {
                 "-sessionId", "mix2",
             )
         )
-
-         */
     }
 }

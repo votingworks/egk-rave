@@ -18,7 +18,7 @@ rave_print "Creating mixnet input from the encrypted ballots"
 CLASSPATH="build/libs/rave-mixnet-all.jar"
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.rave.RunMakeMixnetInput \
+  org.cryptobiotic.mixnet.RunMakeMixnetInput \
     -eballots ${WORKSPACE_DIR}/bb/encryptedBallots \
     -out ${WORKSPACE_DIR}/vf/inputCiphertexts.bt
 

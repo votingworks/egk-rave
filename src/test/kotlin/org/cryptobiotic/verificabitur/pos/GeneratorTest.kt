@@ -22,9 +22,9 @@ import java.io.File
 import kotlin.test.Test
 
 class GeneratorTest {
-    val inputDir = "working/vf"
-    val privInfo = "$inputDir/privInfo.xml"
-    val protInfo = "$inputDir/protInfo.xml"
+    val inputDir = "src/test/data/working/vf"
+    val privInfo = "$inputDir/privateInfo.xml"
+    val protInfo = "$inputDir/protocolInfo.xml"
 
     @Test
     fun testMakeGenerators() {

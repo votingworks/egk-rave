@@ -3,40 +3,40 @@ package org.cryptobiotic.verificabitur.bytetree
 import kotlin.test.Test
 
 class ByteTreeWriterTest {
-    val raveDir = "src/test/data/rave/vf"
-    val nizkpDir = "working1/vf/dir/nizkp/1701230437"
-    val nizkpDirProofs = "working1/vf/dir/nizkp/1701230437/proofs"
+    val inputDir = "src/test/data/working/vf"
+    val mixDir = "$inputDir/Party01/nizkp/mix2"
+    val proofsDir = "$inputDir/Party01/nizkp/mix2/proofs"
 
     val testOutDir = "testOut/ByteTreeWriterTest"
 
     @Test
     fun testRoundtripRavePublicKeyFile() {
-        roundtrip(raveDir, "publickey.raw")
+        roundtrip(inputDir, "publicKey.bt")
     }
 
     @Test
     fun testRoundtripPermutationCommitment() {
-        roundtrip(nizkpDirProofs, "PermutationCommitment01.bt")
+        roundtrip(proofsDir, "PermutationCommitment01.bt")
     }
 
     @Test
     fun testRoundtripPoSCommitment() {
-        roundtrip(nizkpDirProofs, "PoSCommitment01.bt")
+        roundtrip(proofsDir, "PoSCommitment01.bt")
     }
 
     @Test
     fun testRoundtripPoSReply() {
-        roundtrip(nizkpDirProofs, "PoSReply01.bt")
+        roundtrip(proofsDir, "PoSReply01.bt")
     }
 
     @Test
     fun testRoundtripCiphertexts() {
-        roundtrip(nizkpDir, "Ciphertexts.bt", 2)
+        roundtrip(mixDir, "Ciphertexts.bt", 2)
     }
 
     @Test
     fun testRoundtripShuffledCiphertexts() {
-        roundtrip(nizkpDir, "ShuffledCiphertexts.bt", 1)
+        roundtrip(mixDir, "ShuffledCiphertexts.bt", 1)
     }
 
     fun roundtrip(dir: String, filename : String, maxDepth: Int = 10) {
