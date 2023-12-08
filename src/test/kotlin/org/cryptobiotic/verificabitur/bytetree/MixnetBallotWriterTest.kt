@@ -1,6 +1,6 @@
 package org.cryptobiotic.verificabitur.bytetree
 
-import org.cryptobiotic.mixnet.CiphertextDecryptor
+import org.cryptobiotic.pep.CiphertextDecryptor
 import electionguard.core.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,7 +28,7 @@ class MixnetBallotWriterTest {
     fun roundtrip(dir: String, filename : String, maxDepth: Int = 1) {
         val pathname = "$dir/$filename"
         println("readMixnetBallots filename = $pathname")
-        val ballots = readMixnetBallotFromFile(pathname, group)
+        val ballots = readMixnetBallotFromFile(group, pathname)
 
         val tree = ballots.publish()
         println(tree.show())
@@ -44,7 +44,7 @@ class MixnetBallotWriterTest {
     }
 
     fun readAndDecryptMixnetBallot(inputFilename: String) {
-        val ballots = readMixnetBallotFromFile(inputFilename, group)
+        val ballots = readMixnetBallotFromFile(group, inputFilename)
         assertEquals(13, ballots.size)
         ballots.forEach() {
             assertEquals(34, it.ciphertexts.size)

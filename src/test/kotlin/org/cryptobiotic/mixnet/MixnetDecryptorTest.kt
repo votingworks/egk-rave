@@ -6,14 +6,15 @@ import electionguard.core.ElGamalCiphertext
 import electionguard.core.ElementModP
 import electionguard.core.productionGroup
 import electionguard.publish.makeConsumer
+import org.cryptobiotic.pep.CiphertextDecryptor
 import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 
+// check that the mixnet output decrypts properly
 class MixnetDecryptorTest {
     val group = productionGroup()
-
 
     @Test
     fun testCompareMixnet() {

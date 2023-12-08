@@ -16,7 +16,7 @@ class MixnetPepBlindTrust(
     val extendedBaseHash: UInt256,
     val jointPublicKey: ElGamalPublicKey,
     val blindTrustees: List<PepTrusteeIF>, // the trustees used to blind the decryption
-    val decryptor: CiphertextDecryptor, // TODO replace with DecryptorDoerr using List<Ciphertext> instead of ballot.
+    val decryptor: CiphertextDecryptor,
 ) {
     val stats = Stats()
 

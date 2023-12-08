@@ -19,7 +19,7 @@ CLASSPATH="build/libs/rave-mixnet-all.jar"
 rave_print "... verify mix1 shuffle ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.verificabitur.vmn.RunVerifier \
+  org.cryptobiotic.verificabitur.vmn.RunMixnetVerifier \
     -protInfo ${VF_BB}/protocolInfo.xml \
     -shuffle ${VF_BB}/mix1 \
     --sessionId mix1 \
@@ -28,7 +28,7 @@ java -classpath $CLASSPATH \
 rave_print "... verify mix2 shuffle ..."
 
 java -classpath $CLASSPATH \
-  org.cryptobiotic.verificabitur.vmn.RunVerifier \
+  org.cryptobiotic.verificabitur.vmn.RunMixnetVerifier \
     -protInfo ${VF_BB}/protocolInfo.xml \
     -shuffle ${VF_BB}/mix2 \
     --sessionId mix2 \

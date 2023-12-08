@@ -18,14 +18,11 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
-import org.cryptobiotic.pep.BallotPep
-import org.cryptobiotic.pep.PepBallotSinkIF
-import org.cryptobiotic.pep.PepTrustee
-import org.cryptobiotic.pep.PepIO
+import org.cryptobiotic.pep.*
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
 /**
- * Compare encrypted ballots with mixnet output using PEP algorithm.
+ * Compare encrypted ballots with mixnet output using PEP algorithm. Not used in favor of MixnetPepBlindTrust
  *
  * Read election record from inputDir, which is assumed to have an electionInitialized file in the inputDir directory,
  * and encrypted ballots in inputDir/encrypted_ballots. This is the "standard election record layout".

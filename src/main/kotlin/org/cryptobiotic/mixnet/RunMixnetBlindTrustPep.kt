@@ -17,11 +17,10 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.cryptobiotic.pep.BallotPep
-import org.cryptobiotic.pep.PepBallotSinkIF
-import org.cryptobiotic.pep.PepTrustee
-import org.cryptobiotic.pep.PepIO
+
+import org.cryptobiotic.pep.*
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
+import org.cryptobiotic.verificabitur.bytetree.readMixnetBallotFromFile
 
 /**
  * Compare encrypted ballots with local trustees CLI. Multithreaded: each ballot gets its own coroutine.
@@ -34,7 +33,7 @@ import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
  * The subdirectories correspond to the "device".
  *
  * This has access to all the trustees for decrypting and blinding. So it is used when the guardians trust each other.
- * The decrypting trustees could be isolated into seperate webapps, although this class does not yet have that option.
+ * The decrypting trustees could be isolated into separate webapps, although this class does not yet have that option.
  */
 class RunMixnetBlindTrustPep {
 
@@ -54,11 +53,16 @@ class RunMixnetBlindTrustPep {
                 shortName = "eballots",
                 description = "Directory containing encrypted ballots to compare (PB)"
             ).required()
-            val mixnetFile by parser.option(
+            val mixedBallots by parser.option(
                 ArgType.String,
-                shortName = "file with mixnet output",
-                description = "Json file containing mixnet ballot output"
+                shortName = "mixballots",
+                description = "mixnet ballot output, ByteTree serialization"
             ).required()
+            val mixedBallotsJson by parser.option(
+                ArgType.Boolean,
+                shortName = "isJson",
+                description = "mixnet ballot are in Json"
+            ).default(false)
             val trusteeDir by parser.option(
                 ArgType.String,
                 shortName = "trustees",
@@ -85,7 +89,7 @@ class RunMixnetBlindTrustPep {
                 "RunMixnetBlindTrustPep starting\n" +
                         "   -in $inputDir\n" +
                         "   -eballots $encryptedBallotsDir\n" +
-                        "   -mixnetFile $mixnetFile\n" +
+                        "   --mixedBallots $mixedBallots iJson=$mixedBallotsJson\n" +
                         "   -trustees $trusteeDir\n" +
                         "   -out $outputDir\n" +
                         "   -nthreads $nthreads"
@@ -96,7 +100,7 @@ class RunMixnetBlindTrustPep {
             }
 
             val group = productionGroup()
-            batchMixnetBlindTrustPep(group, inputDir, encryptedBallotsDir, trusteeDir, mixnetFile, outputDir, nthreads)
+            batchMixnetBlindTrustPep(group, inputDir, encryptedBallotsDir, trusteeDir, mixedBallots, mixedBallotsJson, outputDir, nthreads)
         }
 
         private fun batchMixnetBlindTrustPep(
@@ -104,11 +108,12 @@ class RunMixnetBlindTrustPep {
             inputDir: String,
             encryptedBallotsDir: String,
             trusteeDir: String,
-            mixnetFile: String,
+            mixedBallots: String,
+            isJson: Boolean,
             outputDir: String,
             nthreads: Int,
         ) {
-            println(" MixnetBlindTrustPep compare ballots in '${inputDir}' to ballots in '$mixnetFile'")
+            println(" MixnetBlindTrustPep compare ballots in '${inputDir}' to ballots in '$mixedBallots'")
             val starting = getSystemTimeInMillis() // wall clock
 
             val decryptor = CiphertextDecryptor(
@@ -137,7 +142,8 @@ class RunMixnetBlindTrustPep {
                 blindingTrustees,
                 decryptor
             )
-            val mixnetBallots = readMixnetJsonBallots(group, mixnetFile)
+            val mixnetBallots = if (isJson) readMixnetJsonBallots(group, mixedBallots)
+                                else readMixnetBallotFromFile(group, mixedBallots)
 
             val sink = PepIO(outputDir, group, false).pepBallotSink()
 

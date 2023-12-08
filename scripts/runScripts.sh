@@ -8,8 +8,8 @@
 ./scripts/mixnet-shuffle.sh working
 ./scripts/copy-to-bb.sh working
 ./scripts/mixnet-verify.sh working
-# ./scripts/run-pep-compare.sh working
-# ./scripts/run-pep-verify.sh working
+# ./scripts/pep-compare.sh working
+# ./scripts/pep-verify.sh working
 
 # fetch latest eg library
 # cd tools/electionguard/egk-webapps
