@@ -15,9 +15,16 @@ import kotlin.test.assertNotNull
 class MixnetDecryptorTest {
     val group = productionGroup()
 
+    val inputDir = "src/test/data/working"
+    val workingDir =  "testOut/testDecryptMixnetOutput"
+    val trusteeDir =  "$inputDir/eg/trustees"
+    val invalidDir =  "${workingDir}/invalid"
+    val inputBallots = "$inputDir/bb/vf/mix1/Ciphertexts.bt"
+    val mixedBallots = "$inputDir/bb/vf/mix2/ShuffledCiphertexts.bt"
+
     @Test
     fun testCompareMixnet() {
-        val root = readByteTreeFromFile("src/commonTest/data/rave/vf/input-ciphertexts.raw")
+        val root = readByteTreeFromFile(inputBallots)
         val ptree = convertByteTree(root.root)
 
         val consumer = makeConsumer(group, "src/commonTest/data/rave/eg")
@@ -77,7 +84,8 @@ class MixnetDecryptorTest {
 
     @Test
     fun testDecryptMixnetOutput() {
-        val root = readByteTreeFromFile("src/commonTest/data/rave/vf/after-mix-2-ciphertexts.raw")
+
+        val root = readByteTreeFromFile(mixedBallots)
         val ptree = convertByteTree(root.root)
         println(ptree)
         val ctree = convertPTree(ptree)
