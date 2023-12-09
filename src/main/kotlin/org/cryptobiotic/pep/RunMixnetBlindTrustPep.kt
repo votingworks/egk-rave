@@ -214,7 +214,7 @@ class RunMixnetBlindTrustPep {
                     logger.warn { " PEP error on ballot ${eballot.ballotId} because $result" }
                 } else {
                     val pepBallot = result.unwrap()
-                    logger.info { " PEP compared ${pepBallot.ballotId} equality=${pepBallot.isEq}" }
+                    logger.info { " PEP compared ballotId='${pepBallot.ballotId}' equality=${pepBallot.isEq}" }
                     output.send(pepBallot)
                 }
                 yield()

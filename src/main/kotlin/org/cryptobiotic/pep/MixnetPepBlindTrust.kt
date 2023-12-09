@@ -15,6 +15,7 @@ class MixnetPepBlindTrust(
     val jointPublicKey: ElGamalPublicKey,
     val blindTrustees: List<PepTrusteeIF>, // the trustees used to blind the decryption
     val decryptor: CiphertextDecryptor,
+    val debugProofs : Boolean = false,
 ) {
     val stats = Stats()
 
@@ -207,17 +208,20 @@ class MixnetPepBlindTrust(
         }
         val ballotPEP = BallotPep(ballotAB.ballotId, isEq, contestsPEP)
 
-        // debug: verify the decyption prrofs
-        var countOk = 0
-        ballotPEP.contests.forEach {
-            it.selections.forEach {
-                val ok = it.decryptionProof.verifyDecryption(extendedBaseHash, jointPublicKey.key, it.ciphertextAB, it.T)
-                if (!ok) {
-                    println("FAIL")
-                } else countOk++
+        // debug: verify the decyption proofs
+        if (debugProofs) {
+            var countOk = 0
+            ballotPEP.contests.forEach {
+                it.selections.forEach {
+                    val ok =
+                        it.decryptionProof.verifyDecryption(extendedBaseHash, jointPublicKey.key, it.ciphertextAB, it.T)
+                    if (!ok) {
+                        println("FAIL")
+                    } else countOk++
+                }
             }
+            println("  Verify ok $countOk")
         }
-        println("  Verify ok $countOk")
 
         stats.of("MixnetBlindTrustPep", "ciphertext").accum(getSystemTimeInMillis() - startPep, ntexts)
 

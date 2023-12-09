@@ -11,10 +11,13 @@ See [RAVE Cryptography Implementation](https://github.com/votingworks/rave-crypt
 
 ## Sample Workflow for testing
 
-`~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
-`
+````
+~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
+````
 
-Runs a complete test RAVE workflow and writes the output to the working directory. The components of this workflow are:
+Runs a complete test RAVE workflow and writes the output to the working directory. [Sample Output](docs/workflowOutput.txt)
+
+The components of this workflow are:
 
 ###  initialize-election.sh working
 

@@ -12,7 +12,7 @@ fi
 
 rave_print "Decrypting encrypted tally..."
 
-CLASSPATH="/home/stormy/dev/github/electionguard-kotlin-multiplatform/egkliball/build/libs/egklib-all.jar"
+CLASSPATH="build/libs/rave-mixnet-all.jar"
 
 java -classpath $CLASSPATH \
   electionguard.cli.RunTrustedTallyDecryption \
