@@ -103,7 +103,7 @@ class RunMixnetBlindTrustPep {
             batchMixnetBlindTrustPep(group, inputDir, encryptedBallotsDir, trusteeDir, mixedBallots, mixedBallotsJson, outputDir, nthreads)
         }
 
-        private fun batchMixnetBlindTrustPep(
+        fun batchMixnetBlindTrustPep(
             group: GroupContext,
             inputDir: String,
             encryptedBallotsDir: String,
