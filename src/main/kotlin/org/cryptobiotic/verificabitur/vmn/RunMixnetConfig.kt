@@ -1,6 +1,13 @@
 package org.cryptobiotic.verificabitur.vmn
 
 import com.github.michaelbull.result.unwrap
+import com.verificatum.arithm.PGroupElement
+import com.verificatum.protocol.Protocol
+import com.verificatum.protocol.elgamal.ProtocolElGamalInterfaceFactory
+import com.verificatum.protocol.mixnet.MixNetElGamal
+import com.verificatum.protocol.mixnet.MixNetElGamalInterfaceFactory
+import com.verificatum.ui.tui.TConsole
+import com.verificatum.ui.tui.TextualUI
 import electionguard.core.productionGroup
 import electionguard.publish.Consumer
 import electionguard.publish.makeConsumer
@@ -9,6 +16,7 @@ import kotlinx.cli.ArgType
 import kotlinx.cli.required
 import org.cryptobiotic.verificabitur.bytetree.*
 import org.cryptobiotic.verificabitur.reader.*
+import java.io.File
 
 class RunMixnetConfig {
     companion object {
@@ -40,18 +48,21 @@ class RunMixnetConfig {
             println("RunMixnetConfig inputDir= $inputDir workingDir= $workingDir ")
 
             val config = MixnetConfig(inputDir, workingDir)
-            config.makePublicKey()
-            config.makeProtoInfo(workingDir, pkey, width)
-            config.makePrivInfo(workingDir, rand, skey, keygen)
+            val publicKeyFilename = config.makePublicKey()
+            val protoInfoFilename = config.makeProtoInfo(workingDir, pkey, width)
+            val privInfoFilename = config.makePrivInfo(workingDir, rand, skey, keygen)
+
+            // replace vmn -setpk
+            config.setPublicKey(protoInfoFilename, privInfoFilename, publicKeyFilename)
         }
     }
 }
 
 
-class MixnetConfig(val inputDir: String, val workingDir: String) {
+class MixnetConfig(val inputDir: String, val workingDir: String){
     val group = productionGroup()
 
-    fun makePublicKey() {
+    fun makePublicKey(): String  {
         val consumer : Consumer = makeConsumer(group, inputDir, true)
         val init = consumer.readElectionInitialized().unwrap()
         val publicKey = init.jointPublicKey
@@ -59,9 +70,32 @@ class MixnetConfig(val inputDir: String, val workingDir: String) {
 
         val bt = mixnetPublicKey.publish()
         writeByteTreeToFile(bt, "$workingDir/publicKey.bt")
+        return "$workingDir/publicKey.bt"
     }
 
-    fun makeProtoInfo(working: String, pkey: String, width : Int) {
+    fun setPublicKey(protInfoFilename: String, privInfoFilename: String, publicKeyFilename: String) {
+        // make MixNetElGamal
+        val factory: ProtocolElGamalInterfaceFactory = MixNetElGamalInterfaceFactory()
+        val elGamalRawInterface = factory.getInterface("raw")
+        val protocolInfoFile = File(protInfoFilename)
+        val generator = factory.getGenerator(protocolInfoFile)
+        val privateInfo = Protocol.getPrivateInfo(generator, File(privInfoFilename))
+        val protocolInfo = Protocol.getProtocolInfo(generator, protocolInfoFile)
+        val mixnet = MixNetElGamal(privateInfo, protocolInfo, TextualUI(TConsole())) // side effects?
+
+        //// processSetpk()
+        val publicKeyFile = File(publicKeyFilename)
+        mixnet.writeBoolean(".setpk")
+        val marshalledPublicKey: PGroupElement =
+            elGamalRawInterface.readPublicKey(
+                publicKeyFile,
+                mixnet.randomSource,
+                mixnet.certainty
+            )
+        mixnet.setPublicKey(marshalledPublicKey)
+    }
+
+    fun makeProtoInfo(working: String, pkey: String, width : Int): String {
         val modPGroup = group.makeModPGroupBt(0)
         val btree = modPGroup.publish()
         val pgroup = btree.hex()
@@ -201,10 +235,10 @@ class MixnetConfig(val inputDir: String, val workingDir: String) {
         )
 
         protocolInfo.writePrivateInfo("$working/protocolInfo.xml")
-
+        return "$working/protocolInfo.xml"
     }
 
-    fun makePrivInfo(working : String, rand: String, skey: String, keygen : String) {
+    fun makePrivInfo(working : String, rand: String, skey: String, keygen : String): String {
         val privateInfo = PrivateInfo(
 
             version = "3.1.0",
@@ -267,5 +301,6 @@ class MixnetConfig(val inputDir: String, val workingDir: String) {
         )
 
         privateInfo.writePrivateInfo("$working/privateInfo.xml")
+        return "$working/privateInfo.xml"
     }
 }

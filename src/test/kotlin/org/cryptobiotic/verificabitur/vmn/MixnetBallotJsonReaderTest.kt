@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.verificabitur.vmn
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -9,6 +9,7 @@ import electionguard.core.*
 import electionguard.publish.makeConsumer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
+import org.cryptobiotic.pep.MixnetPepBlindTrust
 import org.cryptobiotic.pep.CiphertextDecryptor
 import org.cryptobiotic.pep.PepTrustee
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
@@ -19,59 +20,31 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 class MixnetBallotJsonReaderTest {
-    val workingDir = "src/test/data/working/vf"
+    val workingDir = "src/test/data/working/"
     val bbDir = "src/test/data/working/bb/vf"
 
-    val topdir = "src/commonTest/data/mixnetInput"
+    val jsonFile = "src/test/data/mixnetInput/inputCiphertexts.json"
 
     var fileSystem = FileSystems.getDefault()
     var fileSystemProvider = fileSystem.provider()
     val group = productionGroup()
     val jsonReader = Json { explicitNulls = false; ignoreUnknownKeys = true }
 
+
     @Test
     fun testMixnetInput() {
-        val result = readMixnetBallotJson("$topdir/inputCiphertexts.json")
+        val result = readMixnetBallotJson(jsonFile)
         assertTrue(result is Ok)
-        println(result.unwrap().show())
-    }
+        val mixnetInput: MixnetBallotJson = result.unwrap() // SO?
 
-    @Test
-    fun testMixnetOutput() {
-        val result = readMixnetBallotJson("$topdir/vf/after-mix-2-ciphertexts.json")
-        assertTrue(result is Ok)
-        println(result.unwrap().show())
-    }
-
-    @Test
-    fun testMixnetOutputDecrypt() {
         val decryptor = CiphertextDecryptor(
             group,
-            "$topdir/eg",
-            "$topdir/eg/trustees",
-        )
-
-        val converted = readMixnetJsonBallots(group, "$topdir/vf/after-mix-2-ciphertexts.json")
-        converted.forEachIndexed { idx, it ->
-            it.ciphertexts.forEach { ciphertext ->
-                val vote = decryptor.decrypt(ciphertext)
-                print("$vote,")
-                assertNotNull(vote)
-            }
-            println("\nballot ${idx + 1} OK")
-        }
-    }
-
-    @Test
-    fun testEncryptedBallotDecrypt() {
-        val decryptor = CiphertextDecryptor(
-            group,
-            "$topdir/eg",
-            "$topdir/eg/trustees",
+            "$workingDir/eg",
+            "$workingDir/eg/trustees",
         )
 
         val mixnetBallots = mutableListOf<MixnetBallot>()
-        val consumer = makeConsumer(group, "$topdir/eg")
+        val consumer = makeConsumer(group, "$workingDir/eg")
         consumer.iterateAllCastBallots().forEach { encryptedBallot ->
             val ciphertexts = mutableListOf<ElGamalCiphertext>()
             ciphertexts.add(encryptedBallot.encryptedSn!!) // always the first one
@@ -86,7 +59,7 @@ class MixnetBallotJsonReaderTest {
         mixnetBallots.forEachIndexed { idx, it ->
             it.ciphertexts.forEach { ciphertext ->
                 val vote = decryptor.decrypt(ciphertext)
-                print("$vote,")
+                // print("$vote,")
                 assertNotNull(vote)
             }
             println("\nballot ${idx + 1} OK")
@@ -95,15 +68,18 @@ class MixnetBallotJsonReaderTest {
 
     @Test
     fun testEncryptedBallotMatch() {
-        val mixnetFile = "$topdir/vf/after-mix-2-ciphertexts.json"
+        val result = readMixnetBallotJson(jsonFile)
+        assertTrue(result is Ok)
+        val mixnetInput: MixnetBallotJson = result.unwrap() // SO?
+
         val decryptor = CiphertextDecryptor(
             group,
-            "$topdir/eg",
-            "$topdir/eg/trustees",
+            "$workingDir/eg",
+            "$workingDir/eg/trustees",
         )
 
         val encryptedBallots = mutableMapOf<Int, EncryptedBallot>() // key is the SN (for now)
-        val consumer = makeConsumer(group, "$topdir/eg")
+        val consumer = makeConsumer(group, "$workingDir/eg")
         consumer.iterateAllCastBallots().forEach { encryptedBallot ->
             val sn = decryptor.decryptPep(encryptedBallot.encryptedSn!!)!!
             encryptedBallots[sn.hashCode()] = encryptedBallot
@@ -121,7 +97,7 @@ class MixnetBallotJsonReaderTest {
             decryptor
         )
 
-        val mixnetBallots = readMixnetJsonBallots(group, mixnetFile)
+        val mixnetBallots = readMixnetJsonBallots(group, jsonFile)
         mixnetBallots.forEachIndexed { idx, it ->
             val first = decryptor.decryptPep(it.ciphertexts[0])!!
             val match = encryptedBallots[first.hashCode()]

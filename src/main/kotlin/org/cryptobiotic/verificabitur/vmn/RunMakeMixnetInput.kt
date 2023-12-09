@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.verificabitur.vmn
 
 import electionguard.core.*
 import electionguard.publish.makeConsumer

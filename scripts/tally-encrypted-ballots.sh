@@ -11,7 +11,7 @@ fi
 
 rave_print "Tallying encrypted ballots..."
 
-CLASSPATH="/home/stormy/dev/github/electionguard-kotlin-multiplatform/egkliball/build/libs/egklib-all.jar"
+CLASSPATH="build/libs/rave-mixnet-all.jar"
 
 java -classpath $CLASSPATH \
   electionguard.cli.RunAccumulateTally \

@@ -1,18 +1,18 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.pep
 
 import kotlin.test.Test
 
-class RunMixnetPepTest {
+class RunMixnetBlindTrustPepTest {
     val topDir = "src/test/data/working/"
     val bbDir = "$topDir/bb"
 
     @Test
-    fun testRunMixnetPep() {
-        RunMixnetPep.main(
+    fun testRunMixnetBlindTrustPep() {
+        RunMixnetBlindTrustPep.main(
             arrayOf(
                 "-in", "$bbDir/eg",
                 "-eballots", "$bbDir/encryptedBallots",
-                "--mixnetFile", "$bbDir/vf/mix2/ShuffledCiphertexts.bt",
+                "--mixedBallots", "$bbDir/vf/mix2/ShuffledCiphertexts.bt",
                 "-trustees", "$topDir/eg/trustees",
                 "-out", "testOut/RunMixnetBlindTrustPepTest/",
                 "-nthreads", "33",

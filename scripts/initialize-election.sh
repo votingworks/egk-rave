@@ -27,7 +27,7 @@ node scripts/election-definition-convert-vx-to-eg.js ${VX_DEF} ${WORKSPACE_DIR}/
 
 rave_print "  build sample ElectionGuard configuration"
 
-CLASSPATH="/home/stormy/dev/github/electionguard-kotlin-multiplatform/egkliball/build/libs/egklib-all.jar"
+CLASSPATH="build/libs/rave-mixnet-all.jar"
 
  java -classpath $CLASSPATH electionguard.cli.RunCreateElectionConfig \
     -manifest ${WORKSPACE_DIR}/eg/manifest.json \

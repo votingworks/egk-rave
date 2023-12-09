@@ -20,12 +20,4 @@ java -classpath $CLASSPATH \
     -input ${EG_WORKSPACE} \
     -working ${VERIFICATUM_WORKSPACE}
 
-# TODO
-rave_print "Set public key"
-# - Set an externally generated public key to be used during shuffling (without decrypting).
-# The key must be given in the raw format for the group specified in the info file and with the proper key width.
-# Consider using the vmnc command to convert public keys in other formats.
-vmn -setpk -e ${VERIFICATUM_WORKSPACE}/privateInfo.xml ${VERIFICATUM_WORKSPACE}/protocolInfo.xml ${VERIFICATUM_WORKSPACE}/publicKey.bt
-
-
 rave_print "[DONE] Initialize verificatum mixnet in directory ${VERIFICATUM_WORKSPACE}"

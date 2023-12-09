@@ -26,23 +26,6 @@ data class SelectionPep(
     val T: ElementModP,
     val decryptionProof: ChaumPedersenProof,
 ) {
-
-    constructor(step1: PepSimple.SelectionStep1, dselection: DecryptedTallyOrBallot.Selection) : this (
-        dselection.selectionId,
-        step1.ciphertextRatio,
-        step1.ciphertextAB,
-        ChaumPedersenProof(step1.c, step1.v),
-        dselection.bOverM,
-        dselection.proof,
-    )
-    constructor(selection: PepTrusted.SelectionWorking, dselection: DecryptedTallyOrBallot.Selection) : this(
-        dselection.selectionId,
-        selection.ciphertextRatio,
-        selection.ciphertextAB,
-        ChaumPedersenProof(selection.c, selection.v),
-        dselection.bOverM,
-        dselection.proof,
-    )
     constructor(work: BlindWorking, dselection: DecryptedTallyOrBallot.Selection) : this (
         dselection.selectionId,
         work.ciphertextRatio,

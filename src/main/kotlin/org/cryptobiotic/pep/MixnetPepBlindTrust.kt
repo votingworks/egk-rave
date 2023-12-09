@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.pep
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -7,16 +7,15 @@ import electionguard.ballot.EncryptedBallot
 import electionguard.core.*
 import electionguard.util.ErrorMessages
 import electionguard.util.Stats
-import org.cryptobiotic.pep.*
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
-/** PepBlindTrust adapted for mixnet. */
 class MixnetPepBlindTrust(
     val group: GroupContext,
     val extendedBaseHash: UInt256,
     val jointPublicKey: ElGamalPublicKey,
     val blindTrustees: List<PepTrusteeIF>, // the trustees used to blind the decryption
     val decryptor: CiphertextDecryptor,
+    val debugProofs : Boolean = false,
 ) {
     val stats = Stats()
 
@@ -209,17 +208,20 @@ class MixnetPepBlindTrust(
         }
         val ballotPEP = BallotPep(ballotAB.ballotId, isEq, contestsPEP)
 
-        // debug: verify the decyption prrofs
-        var countOk = 0
-        ballotPEP.contests.forEach {
-            it.selections.forEach {
-                val ok = it.decryptionProof.verifyDecryption(extendedBaseHash, jointPublicKey.key, it.ciphertextAB, it.T)
-                if (!ok) {
-                    println("FAIL")
-                } else countOk++
+        // debug: verify the decyption proofs
+        if (debugProofs) {
+            var countOk = 0
+            ballotPEP.contests.forEach {
+                it.selections.forEach {
+                    val ok =
+                        it.decryptionProof.verifyDecryption(extendedBaseHash, jointPublicKey.key, it.ciphertextAB, it.T)
+                    if (!ok) {
+                        println("FAIL")
+                    } else countOk++
+                }
             }
+            println("  Verify ok $countOk")
         }
-        println("  Verify ok $countOk")
 
         stats.of("MixnetBlindTrustPep", "ciphertext").accum(getSystemTimeInMillis() - startPep, ntexts)
 

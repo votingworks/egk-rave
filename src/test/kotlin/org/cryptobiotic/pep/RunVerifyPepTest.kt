@@ -1,16 +1,17 @@
 package org.cryptobiotic.pep
 
-import org.cryptobiotic.pep.RunVerifyPep
 import kotlin.test.Test
 
 class RunVerifyPepTest {
+    val topDir = "src/test/data/working/"
+    val bbDir = "$topDir/bb"
 
     @Test
     fun testRunVerifyPep() {
         RunVerifyPep.main(
             arrayOf(
-                "-in", "src/commonTest/data/rave/eg",
-                "--pepBallotDir", "src/commonTest/data/rave/bb/pep",
+                "-in", "$bbDir/eg",
+                "--pepBallotDir", "$bbDir/pep",
             )
         )
     }

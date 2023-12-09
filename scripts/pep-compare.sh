@@ -12,10 +12,10 @@ fi
 
 rave_print "Reencrypt ballots to simulate paper ballot scanning"
 
-EGK_CLASSPATH="/home/stormy/dev/github/electionguard-kotlin-multiplatform/egkliball/build/libs/egklib-all.jar"
+CLASSPATH="build/libs/rave-mixnet-all.jar"
 
 java \
-  -classpath ${EGK_CLASSPATH} \
+  -classpath ${CLASSPATH} \
   electionguard.cli.RunBatchEncryption \
     -in ${WORKSPACE_DIR}/eg \
     -ballots ${WORKSPACE_DIR}/eg/inputBallots  \
@@ -27,11 +27,9 @@ rave_print "[DONE] Reencrypting ballots."
 
 rave_print "Checking mixnet output against the reencrypted ballots with PEP algorithm"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
-
 java \
   -classpath ${CLASSPATH} \
-  org.cryptobiotic.mixnet.RunMixnetBlindTrustPep \
+  org.cryptobiotic.pep.RunMixnetBlindTrustPep \
     -in ${WORKSPACE_DIR}/eg \
     -eballots ${WORKSPACE_DIR}/bb/encryptedPaperBallots  \
     -mixballots ${WORKSPACE_DIR}/bb/vf/mix2/ShuffledCiphertexts.bt \

@@ -1,6 +1,7 @@
 package org.cryptobiotic.verificabitur.vmn
 
 import com.verificatum.arithm.PGroup
+import com.verificatum.arithm.PGroupElement
 import com.verificatum.arithm.PGroupElementArray
 import com.verificatum.eio.ExtIO
 import com.verificatum.protocol.Protocol
@@ -17,92 +18,11 @@ import kotlinx.cli.ArgParser
 import kotlinx.cli.ArgType
 import kotlinx.cli.default
 import kotlinx.cli.required
-import kotlin.random.Random
-import java.io.File
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
+import java.io.File
+import kotlin.random.Random
 
 class RunMixnet {
-
-    // Usage:
-    //vmn -h
-    //vmn -keygen
-    //[-cerr] [-e] [-s]
-    //<privInfo> <protInfo> <publicKey>
-
-    //vmn -mix
-    //[-auxsid <sid>] [-cerr] [-e] [-maxciph <value>] [-s] [-width <value>]
-    //<privInfo> <protInfo> <ciphertexts> <plaintexts>
-
-    //vmn -delete
-    //[-auxsid <sid>] [-cerr] [-e] [-f] [-s]
-    //<privInfo> <protInfo>
-
-    //vmn -lact
-    //<privInfo> <protInfo>
-
-    //vmn -sact
-    //<privInfo> <protInfo> <indices>
-
-    //vmn -precomp
-    //[-auxsid <sid>] [-cerr] [-e] [-maxciph <value>] [-s] [-width <value>]
-    //<privInfo> <protInfo>
-
-    //vmn -setpk
-    //[-cerr] [-e] [-s]
-    //<privInfo> <protInfo> <publicKey>
-
-    //vmn -version
-
-    //////////////////////////////////////////////////
-    // this is whats handled here
-
-    //vmn -shuffle [-auxsid <sid>] [-cerr] [-e] [-s] [-width <value>]
-    // <privInfo> <protInfo> <ciphertexts> <ciphertextsout>
-
-    //vmn -decrypt  [-auxsid <sid>] [-cerr] [-e] [-s] [-width <value>]
-    // <privInfo> <protInfo> <ciphertexts> <plaintexts>
-
-    //vmn -mix [- <sid>] [-cerr] [-e] [-maxciph <value>] [-s] [-width <value>]
-    // <privInfo> <protInfo> <ciphertexts> <plaintexts>
-    //
-    // shuffle and decrypt the input ciphertexts, i.e., the output is a list of randomly permuted plaintexts.
-
-    /////////////////////////////////////////////////////////////////////////////////////////
-    // rave_print "... Set up the mixnet, now loading encrypted ballots ..."
-    //
-    //# TODO
-    // WIDTH=34
-    //
-    //# convert ciphertexts to V raw format
-    // vmnc -e -ciphs -width "${WIDTH}"  -ini seqjson -outi raw \
-    //     ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/input-ciphertexts.json ${VERIFICATUM_WORKSPACE}/input-ciphertexts.raw
-    //
-    //
-    //rave_print "... now shuffling once ..."
-    //
-    //AUXSID=`date "+%s" | sed "s/ /_/g"`
-    //
-    //# shuffle once
-    // vmn -shuffle -width "${WIDTH}" -auxsid "${AUXSID}" \
-    //    ${VERIFICATUM_WORKSPACE}/privInfo.xml \
-    //    ${VERIFICATUM_WORKSPACE}/protInfo.xml \
-    //    ${VERIFICATUM_WORKSPACE}/input-ciphertexts.raw ${VERIFICATUM_WORKSPACE}/after-mix-1-ciphertexts.raw
-    //
-    //rave_print "... and shuffling twice ..."
-    //
-    //AUXSID=`date "+%s" | sed "s/ /_/g"`
-    //
-    //# shuffle twice
-    // vmn -shuffle -width "${WIDTH}" -auxsid "${AUXSID}" \
-    //    ${VERIFICATUM_WORKSPACE}/privInfo.xml \
-    //    ${VERIFICATUM_WORKSPACE}/protInfo.xml \
-    //    ${VERIFICATUM_WORKSPACE}/after-mix-1-ciphertexts.raw ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.raw
-    //
-    //# convert output ciphertexts to JSON format
-    // vmnc -ciphs -width "${WIDTH}" -ini raw -outi seqjson \
-    //     ${VERIFICATUM_WORKSPACE}/protInfo.xml ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.raw ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.json
-    //
-    //rave_print "[DONE] Shuffled encrypted ballots are in ${VERIFICATUM_WORKSPACE}/after-mix-2-ciphertexts.json"
 
     companion object {
 
@@ -124,6 +44,11 @@ class RunMixnet {
                 shortName = "protInfo",
                 description = "Protocol info file"
             ).default("protInfo.xml")
+            val publicKey by parser.option(
+                ArgType.String,
+                shortName = "publicKey",
+                description = "Public Key file"
+            ).default("publicKey.bt")
             val auxsid by parser.option(
                 ArgType.String,
                 shortName = "sessionId",

@@ -105,11 +105,9 @@ class RunVerifyPep {
                 val errs = ErrorMessages("Ballot ${ballotPEP.ballotId}")
                 val result = verifier.verify(ballotPEP, errs)
                 if (errs.hasErrors()) {
-                    println(" PEP error verifying ballot ${ballotPEP.ballotId} because $errs")
                     logger.warn { " PEP error verifying ballot ${ballotPEP.ballotId} because $errs" }
                 } else {
-                    println(" PEP verify ${ballotPEP.ballotId} is ${result}")
-                    logger.info { " PEP verify ${ballotPEP.ballotId} is ${result}" }
+                    logger.info { " PEP verify ballotId='${ballotPEP.ballotId}' is ${result}" }
                     count.getAndIncrement()
                 }
                 yield()

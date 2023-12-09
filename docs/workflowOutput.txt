@@ -1,0 +1,199 @@
+~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
+Initializing Election: reinitialize working directory
+  build sample ElectionGuard manifest from scripts/famous-names-election.json
+  build sample ElectionGuard configuration
+RunCreateElectionConfig starting
+   manifest= working/eg/manifest.json
+   nguardians= 3
+   quorum= 3
+   output = working/eg
+   createdBy = RunCreateElectionConfig
+   baux0 = device42
+   chainCodes = false
+RunCreateElectionConfig success, outputType = JSON
+   run KeyCeremony to generate the election keypair
+RunTrustedKeyCeremony starting
+   input= working/eg
+   trustees= working/eg/trustees
+   output = working/eg
+RunTrustedKeyCeremony took 2697 millisecs
+runKeyCeremony result = Ok(true)
+[DONE] Generating ElectionGuard initialization in working/eg
+Generating 13 ballots...
+RunCreateInputBallots
+  electionManifest = 'working/eg/manifest.json'
+  outputDir = 'working/eg/inputBallots'
+  nballots = '13'
+  isJson = 'true'
+
+Encrypting 13 ballots...
+RunBatchEncryption starting
+   input= working/eg
+   ballots = working/eg/inputBallots
+   device = device42
+   outputDir = null
+   encryptDir = working/bb/encryptedBallots
+   nthreads = 11
+   check = None
+   anonymize = false
+Encryption with nthreads = 11 took 1504 millisecs for 13 ballots = 116 msecs/ballot
+    533 total encryptions = 41 per ballot = 2.821763602251407 millisecs/encryption with 11 threads
+[DONE] Generating encrypted ballots: working/bb/encryptedBallots
+Tallying encrypted ballots...
+RunAccumulateTally starting
+   input= working/eg
+   outputDir = working/eg
+   encryptDir = working/bb/encryptedBallots
+AccumulateTally processed 13 good ballots, 0 bad ballots, took 409 millisecs, 31 msecs per good ballot
+  ballots ids accumulated = id-1379921164,id273560147,id-1052009839,id-1768790100,id1475235385,id1176542537,id205854950,id1278349787,id-2104891758,id1778650435,id-2022562062,id1376579992,id1608216892
+[DONE] Tallying encrypted ballots.
+Decrypting encrypted tally...
+RunTrustedTallyDecryption starting
+   input= working/eg
+   trustees= working/eg/trustees
+   output = working/eg
+runDecryptTally present = [trustee1, trustee2, trustee3] missing = []
+DecryptTally took 1786 millisecs
+[DONE] Decrypted tally in working/eg/tally.json
+Creating mixnet input from the encrypted ballots
+[DONE] Creating mixnet input.
+Initialize verificatum mixnet...
+RunMixnetConfig inputDir= working/eg workingDir= working/vf
+[DONE] Initialize verificatum mixnet in directory working/vf
+Shuffling encrypted ballots...
+... now shuffling once ...
+RunMixnet starting
+   input= working/vf/inputCiphertexts.bt
+   privInfo = working/vf/privateInfo.xml
+   protInfo = working/vf/protocolInfo.xml
+   auxsid = mix1
+
+width = 34
+sessionId mix1 complete successfully
+
+... now shuffling twice ...
+RunMixnet starting
+   input= working/vf/Party01/nizkp/mix1/ShuffledCiphertexts.bt
+   privInfo = working/vf/privateInfo.xml
+   protInfo = working/vf/protocolInfo.xml
+   auxsid = mix2
+
+width = 34
+sessionId mix2 complete successfully
+
+[DONE] Shuffling encrypted ballots
+Copy files to public Bulletin Board
+cp: -r not specified; omitting directory 'working/eg/inputBallots'
+cp: -r not specified; omitting directory 'working/eg/trustees'
+[DONE] Copying files to public Bulletin Board
+Verifying shuffled ballots...
+... verify mix1 shuffle ...
+RunMixnetVerifier starting
+   inputDir= working/bb/vf/mix1
+   protInfo = working/bb/vf/protocolInfo.xml
+   width = 34
+   sessionId = mix1
+
+Using Generator class = com.verificatum.protocol.mixnet.MixNetElGamalGen
+
+============ Prepare to verify proof. ==========================
+231208 18:00:41 Read joint public key... done.
+
+Input ciphertexts = working/bb/vf/mix1/Ciphertexts.bt
+231208 18:00:42 Derive independent generators... done.
+
+============ Verify shuffle of Party 1. ========================
+231208 18:00:42 Read permutation commitment... done.
+231208 18:00:42 Read output of Party 1...
+Shuffled ciphertexts = working/bb/vf/mix1/ShuffledCiphertexts.bt
+done.
+231208 18:00:43 Verify proof of shuffle... done.
+Proof size is 977.0 KB  (977004 bytes)
+Completed verification after  0h  0m  9s  (9105 ms
+
+sessionId mix1 complete successfully
+... verify mix2 shuffle ...
+RunMixnetVerifier starting
+   inputDir= working/bb/vf/mix2
+   protInfo = working/bb/vf/protocolInfo.xml
+   width = 34
+   sessionId = mix2
+
+Using Generator class = com.verificatum.protocol.mixnet.MixNetElGamalGen
+
+============ Prepare to verify proof. ==========================
+231208 18:00:51 Read joint public key... done.
+
+Input ciphertexts = working/bb/vf/mix2/Ciphertexts.bt
+231208 18:00:52 Derive independent generators... done.
+
+============ Verify shuffle of Party 1. ========================
+231208 18:00:52 Read permutation commitment... done.
+231208 18:00:52 Read output of Party 1...
+Shuffled ciphertexts = working/bb/vf/mix2/ShuffledCiphertexts.bt
+done.
+231208 18:00:52 Verify proof of shuffle... done.
+Proof size is 977.0 KB  (977004 bytes)
+Completed verification after  0h  0m  9s  (9160 ms
+
+sessionId mix2 complete successfully
+[DONE] Verifying shuffled ballots
+Reencrypt ballots to simulate paper ballot scanning
+RunBatchEncryption starting
+   input= working/eg
+   ballots = working/eg/inputBallots
+   device = scanPaperBallots
+   outputDir = null
+   encryptDir = working/bb/encryptedPaperBallots
+   nthreads = 11
+   check = None
+   anonymize = true
+Encryption with nthreads = 11 took 1587 millisecs for 13 ballots = 122 msecs/ballot
+    533 total encryptions = 41 per ballot = 2.9774859287054407 millisecs/encryption with 11 threads
+[DONE] Reencrypting ballots.
+Checking mixnet output against the reencrypted ballots with PEP algorithm
+RunMixnetBlindTrustPep starting
+   -in working/eg
+   -eballots working/bb/encryptedPaperBallots
+   --mixedBallots working/bb/vf/mix2/ShuffledCiphertexts.bt iJson=false
+   -trustees working/eg/trustees
+   -out working/bb/pep
+   -nthreads 11
+ MixnetBlindTrustPep compare ballots in 'working/eg' to ballots in 'working/bb/vf/mix2/ShuffledCiphertexts.bt'
+2023-12-08 18:01:05.549 WARN  error createDirectories = 'working/bb/pep'
+2023-12-08 18:01:08.681 INFO   PEP compared ballotId='12' equality=true
+2023-12-08 18:01:08.681 INFO   PEP compared ballotId='7' equality=true
+2023-12-08 18:01:08.681 INFO   PEP compared ballotId='1' equality=true
+2023-12-08 18:01:08.686 INFO   PEP compared ballotId='4' equality=true
+2023-12-08 18:01:08.686 INFO   PEP compared ballotId='2' equality=true
+2023-12-08 18:01:08.687 INFO   PEP compared ballotId='9' equality=true
+2023-12-08 18:01:08.687 INFO   PEP compared ballotId='13' equality=true
+2023-12-08 18:01:08.687 INFO   PEP compared ballotId='8' equality=true
+2023-12-08 18:01:08.688 INFO   PEP compared ballotId='5' equality=true
+2023-12-08 18:01:08.691 INFO   PEP compared ballotId='6' equality=true
+2023-12-08 18:01:08.709 INFO   PEP compared ballotId='11' equality=true
+2023-12-08 18:01:10.761 INFO   PEP compared ballotId='10' equality=true
+2023-12-08 18:01:10.872 INFO   PEP compared ballotId='3' equality=true
+ MixnetBlindTrustPep: took 28314 msecs = 66.0 msecs/ciphertext (429 ciphertexts) = 2178.0 msecs/ballot for 13 ballots
+               total: took 28314 msecs = 66.0 msecs/ciphertext (429 ciphertexts) = 2178.0 msecs/ballot for 13 ballots
+MixnetBlindTrustPep took 5 wallclock secs for 13 ballots = .46053 secs/ballot with 11 threads
+[DONE] Checking mixnet output.
+Verify the PEP output.
+RunVerifyPep starting
+   input= working/eg
+ Pep verify ballots in 'working/bb/pep/'
+2023-12-08 18:01:13.750 INFO   PEP verify ballotId='3' is true
+2023-12-08 18:01:13.796 INFO   PEP verify ballotId='10' is true
+2023-12-08 18:01:13.812 INFO   PEP verify ballotId='8' is true
+2023-12-08 18:01:13.815 INFO   PEP verify ballotId='7' is true
+2023-12-08 18:01:13.816 INFO   PEP verify ballotId='6' is true
+2023-12-08 18:01:13.823 INFO   PEP verify ballotId='4' is true
+2023-12-08 18:01:13.831 INFO   PEP verify ballotId='13' is true
+2023-12-08 18:01:13.839 INFO   PEP verify ballotId='2' is true
+2023-12-08 18:01:13.847 INFO   PEP verify ballotId='5' is true
+2023-12-08 18:01:13.849 INFO   PEP verify ballotId='11' is true
+2023-12-08 18:01:13.860 INFO   PEP verify ballotId='9' is true
+2023-12-08 18:01:14.319 INFO   PEP verify ballotId='1' is true
+2023-12-08 18:01:14.340 INFO   PEP verify ballotId='12' is true
+PepVerify took 2 wallclock secs for 13 ballots = .188 secs/ballot with 11 threads
+[DONE] PEP verify.
