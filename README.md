@@ -9,13 +9,26 @@ This is the kotlin/java code for RAVE cryptography. It builds on top of
 
 See [RAVE Cryptography Implementation](https://github.com/votingworks/rave-cryptography-implementation) for more information.
 
+## Install
+
+This version is completely self-contained, by including a copy of the electionguard and verificatum jars in it.
+This means you dont have to install verificatum at all, since rave-mixnet provides wrappers around the verificatum
+library.
+
+````
+cd <install-dir>
+git clone https://github.com/JohnLCaron/rave-mixnet.git
+cd rave-mixnet
+./gradlew clean assemble
+````
+
 ## Sample Workflow for testing
 
 ````
 ~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
 ````
 
-Runs a complete test RAVE workflow and writes the output to the working directory. [Sample Output](docs/workflowOutput.txt)
+Runs a complete test RAVE workflow and writes the output to the _working_ subdirectory. [Sample Output](docs/workflowOutput.txt)
 
 The components of this workflow are:
 
