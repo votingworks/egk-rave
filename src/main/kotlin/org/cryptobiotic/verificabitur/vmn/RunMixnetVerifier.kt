@@ -17,7 +17,7 @@ import kotlinx.cli.required
 import java.io.File
 import java.io.IOException
 
-class RunVerifier {
+class RunMixnetVerifier {
 
     // vmnv -shuffle -width "${WIDTH}" -auxsid "${AUXSID}" \
     //   ${VERIFICATUM_WORKSPACE}/protInfo.xml \
@@ -27,7 +27,7 @@ class RunVerifier {
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val parser = ArgParser("RunVerifier")
+            val parser = ArgParser("RunMixnetVerifier")
             val inputDir by parser.option(
                 ArgType.String,
                 shortName = "shuffle",
@@ -52,7 +52,7 @@ class RunVerifier {
             parser.parse(args)
 
             println(
-                "RunVerifier starting\n" +
+                "RunMixnetVerifier starting\n" +
                         "   inputDir= $inputDir\n" +
                         "   protInfo = $protInfo\n" +
                         "   width = $width\n" +

@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.pep
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
@@ -7,10 +7,8 @@ import electionguard.ballot.EncryptedBallot
 import electionguard.core.*
 import electionguard.util.ErrorMessages
 import electionguard.util.Stats
-import org.cryptobiotic.pep.*
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 
-/** PepBlindTrust adapted for mixnet. */
 class MixnetPepBlindTrust(
     val group: GroupContext,
     val extendedBaseHash: UInt256,

@@ -1,14 +1,10 @@
 package org.cryptobiotic.pep
 
 import com.github.michaelbull.result.Err
-import com.github.michaelbull.result.Result
 import com.github.michaelbull.result.unwrap
 
 import electionguard.ballot.EncryptedBallot
-import electionguard.cli.RunTrustedTallyDecryption
 import electionguard.core.*
-import electionguard.decrypt.DecryptingTrusteeIF
-import electionguard.decrypt.Guardians
 import electionguard.publish.*
 import electionguard.util.sigfig
 import kotlinx.cli.ArgParser
@@ -22,6 +18,10 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.channels.produce
 import io.github.oshai.kotlinlogging.KotlinLogging
 
+import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
+import org.cryptobiotic.verificabitur.bytetree.readMixnetBallotFromFile
+import org.cryptobiotic.verificabitur.vmn.readMixnetJsonBallots
+
 /**
  * Compare encrypted ballots with local trustees CLI. Multithreaded: each ballot gets its own coroutine.
  *
@@ -32,30 +32,37 @@ import io.github.oshai.kotlinlogging.KotlinLogging
  * (matched by ballot_id) is looked for in the scannedBallotDir. If not found, the ballot is skipped.
  * The subdirectories correspond to the "device".
  *
- * The scannedBallotDir directly contains the "scanned" encrypted ballots matching the ones in the election record.
- * TODO: perhaps should look under subdirectories?
- *
  * This has access to all the trustees for decrypting and blinding. So it is used when the guardians trust each other.
- * The decrypting trustees could be isolated into seperate webapps, although this class does not yet have that option.
+ * The decrypting trustees could be isolated into separate webapps, although this class does not yet have that option.
  */
-class RunTrustedPep {
+class RunMixnetBlindTrustPep {
 
     companion object {
-        private val logger = KotlinLogging.logger("RunTrustedPep")
+        private val logger = KotlinLogging.logger("RunMixnetBlindTrustPep")
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val parser = ArgParser("RunTrustedPep")
+            val parser = ArgParser("RunMixnetBlindTrustPep")
             val inputDir by parser.option(
                 ArgType.String,
                 shortName = "in",
                 description = "Top directory of the input election record"
             ).required()
-            val scannedBallotDir by parser.option(
+            val encryptedBallotsDir by parser.option(
                 ArgType.String,
-                shortName = "scanned",
-                description = "Directory containing scanned ballots"
+                shortName = "eballots",
+                description = "Directory containing encrypted ballots to compare (PB)"
             ).required()
+            val mixedBallots by parser.option(
+                ArgType.String,
+                shortName = "mixballots",
+                description = "mixnet ballot output, ByteTree serialization"
+            ).required()
+            val mixedBallotsJson by parser.option(
+                ArgType.Boolean,
+                shortName = "isJson",
+                description = "mixnet ballot are in Json"
+            ).default(false)
             val trusteeDir by parser.option(
                 ArgType.String,
                 shortName = "trustees",
@@ -79,65 +86,77 @@ class RunTrustedPep {
 
             parser.parse(args)
             println(
-                "RunTrustedPep starting\n   -in $inputDir\n   -scanned $scannedBallotDir\n   -trustees $trusteeDir\n" +
-                        "   -out $outputDir\n   -nthreads $nthreads"
+                "RunMixnetBlindTrustPep starting\n" +
+                        "   -in $inputDir\n" +
+                        "   -eballots $encryptedBallotsDir\n" +
+                        "   --mixedBallots $mixedBallots iJson=$mixedBallotsJson\n" +
+                        "   -trustees $trusteeDir\n" +
+                        "   -out $outputDir\n" +
+                        "   -nthreads $nthreads"
             )
+            // TODO use missing
             if (missing != null) {
                 println("   -missing $missing")
             }
 
             val group = productionGroup()
-            val decryptingTrustees = RunTrustedTallyDecryption.readDecryptingTrustees(group, inputDir, trusteeDir, missing)
-
-            batchTrustedPep(group, inputDir, scannedBallotDir, outputDir, decryptingTrustees, nthreads)
+            batchMixnetBlindTrustPep(group, inputDir, encryptedBallotsDir, trusteeDir, mixedBallots, mixedBallotsJson, outputDir, nthreads)
         }
 
-        fun batchTrustedPep(
+        private fun batchMixnetBlindTrustPep(
             group: GroupContext,
             inputDir: String,
-            scannedBallotDir: String,
+            encryptedBallotsDir: String,
+            trusteeDir: String,
+            mixedBallots: String,
+            isJson: Boolean,
             outputDir: String,
-            decryptingTrustees: List<DecryptingTrusteeIF>,
             nthreads: Int,
         ) {
-            println(" PepBlindTrust compare ballots in '${inputDir}' to ballots in '$scannedBallotDir'")
+            println(" MixnetBlindTrustPep compare ballots in '${inputDir}' to ballots in '$mixedBallots'")
             val starting = getSystemTimeInMillis() // wall clock
 
-            val consumerIn = makeConsumer(group, inputDir)
-            val initResult = consumerIn.readElectionInitialized()
-            if (initResult is Err) {
-                println("readElectionInitialized error ${initResult.error}")
-                return
-            }
-            val electionInit = initResult.unwrap()
+            val decryptor = CiphertextDecryptor(
+                group,
+                inputDir,
+                trusteeDir,
+            )
 
+            val encryptedBallots = mutableMapOf<Int, EncryptedBallot>() // key is the SN (for now)
+            val consumer = makeConsumer(group, encryptedBallotsDir, true)
+            consumer.iterateEncryptedBallotsFromDir(encryptedBallotsDir, null).forEach { encryptedBallot ->
+                val sn = decryptor.decryptPep(encryptedBallot.encryptedSn!!)
+                encryptedBallots[sn.hashCode()] = encryptedBallot
+            }
+
+            // TODO make this number settable
             val blindingTrustees = mutableListOf<PepTrustee>()
             repeat(3) {
                 blindingTrustees.add(PepTrustee(it, group))
             }
-            val guardians = Guardians(group, electionInit.guardians)
 
-            val pep = PepBlindTrust(
+            val mixnetPep = MixnetPepBlindTrust(
                 group,
-                electionInit.extendedBaseHash,
-                ElGamalPublicKey(electionInit.jointPublicKey),
-                guardians, // all guardians
+                decryptor.init.extendedBaseHash,
+                decryptor.init.jointPublicKey(),
                 blindingTrustees,
-                decryptingTrustees,
+                decryptor
             )
+            val mixnetBallots = if (isJson) readMixnetJsonBallots(group, mixedBallots)
+                                else readMixnetBallotFromFile(group, mixedBallots)
 
             val sink = PepIO(outputDir, group, false).pepBallotSink()
+
             try {
                 runBlocking {
                     val outputChannel = Channel<BallotPep>()
                     val pepJobs = mutableListOf<Job>()
-                    val ballotProducer = produceBallots(consumerIn, scannedBallotDir)
+                    val ballotProducer = produceBallots(decryptor, mixnetBallots, encryptedBallots)
                     repeat(nthreads) {
                         pepJobs.add(
                             launchPepWorker(
-                                it,
                                 ballotProducer,
-                                pep,
+                                mixnetPep,
                                 outputChannel
                             )
                         )
@@ -152,50 +171,54 @@ class RunTrustedPep {
                 sink.close()
             }
 
-            pep.stats.show(5)
-            val count = pep.stats.count()
+            mixnetPep.stats.show(5)
+            val count = mixnetPep.stats.count()
 
             val took = getSystemTimeInMillis() - starting
             val msecsPerBallot = (took.toDouble() / 1000 / count).sigfig()
-            println("PepBlindTrust took ${took / 1000} wallclock secs for $count ballots = $msecsPerBallot secs/ballot with $nthreads threads")
+            println("MixnetBlindTrustPep took ${took / 1000} wallclock secs for $count ballots = $msecsPerBallot secs/ballot with $nthreads threads")
         }
 
         // parallelize over ballots
         // place the ballot reading into its own coroutine
         @OptIn(ExperimentalCoroutinesApi::class)
-        private fun CoroutineScope.produceBallots(consumer: Consumer, scannedBallotDir: String): ReceiveChannel<Pair<EncryptedBallot, EncryptedBallot>> =
+        private fun CoroutineScope.produceBallots(
+            decryptor: CiphertextDecryptor,
+            mixnetBallots: List<MixnetBallot>,
+            encryptedBallots: Map<Int, EncryptedBallot>): ReceiveChannel<Pair<EncryptedBallot, MixnetBallot>> =
+
             produce {
-                for (ballot in consumer.iterateAllCastBallots()) {
-                    val readResult = consumer.readEncryptedBallot(scannedBallotDir, ballot.ballotId )
-                    if (readResult is Err) {
-                        logger.warn { "SKIPPING ballot ${ballot.ballotId} because $readResult" }
+                mixnetBallots.forEachIndexed { idx, mixnetBallot ->
+                    val first = decryptor.decryptPep(mixnetBallot.ciphertexts[0])
+                    val match = encryptedBallots[first.hashCode()]
+                    if (match == null) {
+                        logger.warn { "Match ballot ${idx + 1} NOT FOUND" }
                     } else {
-                        send(Pair(ballot, readResult.unwrap()))
-                        yield()
+                        send(Pair(match, mixnetBallot.removeFirst()))
                     }
+                    yield()
                 }
                 channel.close()
             }
 
         private fun CoroutineScope.launchPepWorker(
-            id: Int,
-            input: ReceiveChannel<Pair<EncryptedBallot, EncryptedBallot>>,
-            pep: PepAlgorithm,
+            input: ReceiveChannel<Pair<EncryptedBallot, MixnetBallot>>,
+            pep: MixnetPepBlindTrust,
             output: SendChannel<BallotPep>,
         ) = launch(Dispatchers.Default) {
 
             for (ballotPair in input) {
-                val result: Result<BallotPep, String> = pep.doEgkPep(ballotPair.first, ballotPair.second)
+                val (eballot, mixballot) = ballotPair
+                val result = pep.testEquivalent(eballot, mixballot)
                 if (result is Err) {
-                    logger.warn { " PEP error on ballot ${ballotPair.first.ballotId} because $result" }
+                    logger.warn { " PEP error on ballot ${eballot.ballotId} because $result" }
                 } else {
                     val pepBallot = result.unwrap()
-                    logger.info { " PEP compared ${pepBallot.ballotId} equal=${pepBallot.isEq}" }
+                    logger.info { " PEP compared ${pepBallot.ballotId} equality=${pepBallot.isEq}" }
                     output.send(pepBallot)
-                    yield()
                 }
+                yield()
             }
-            logger.debug { "Decryptor #$id done" }
         }
 
         // place the output writing into its own coroutine

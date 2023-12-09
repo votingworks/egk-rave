@@ -1,4 +1,4 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.verificabitur.vmn
 
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok

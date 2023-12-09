@@ -2,12 +2,12 @@ package org.cryptobiotic.verificabitur.vmn
 
 import kotlin.test.Test
 
-class RunVerifierTest {
+class RunMixnetVerifierTest {
 
     @Test
     fun testRunVerifier() {
         val inputDir = "working/vf"
-        RunVerifier.main(
+        RunMixnetVerifier.main(
             arrayOf(
                 "-nizkp", "$inputDir/dir/nizkp/1701230437",
                 "-protInfo", "$inputDir/protInfo.xml",
@@ -15,7 +15,7 @@ class RunVerifierTest {
                 "-width", "34",
             )
         )
-        RunVerifier.main(
+        RunMixnetVerifier.main(
             arrayOf(
                 "-nizkp", "$inputDir/dir/nizkp/1701230458",
                 "-protInfo", "$inputDir/protInfo.xml",
@@ -28,7 +28,7 @@ class RunVerifierTest {
     @Test
     fun testRunVerifierMinimal() {
         val inputDir = "testVerifier"
-        RunVerifier.main(
+        RunMixnetVerifier.main(
             arrayOf(
                 "-nizkp", "$inputDir/mix1",
                 "-protInfo", "$inputDir/protInfo.xml",
@@ -36,7 +36,7 @@ class RunVerifierTest {
                 "-width", "34",
             )
         )
-        RunVerifier.main(
+        RunMixnetVerifier.main(
             arrayOf(
                 "-nizkp", "$inputDir/mix2",
                 "-protInfo", "$inputDir/protInfo.xml",

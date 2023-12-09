@@ -31,7 +31,7 @@ CLASSPATH="build/libs/rave-mixnet-all.jar"
 
 java \
   -classpath ${CLASSPATH} \
-  org.cryptobiotic.mixnet.RunMixnetBlindTrustPep \
+  org.cryptobiotic.pep.RunMixnetBlindTrustPep \
     -in ${WORKSPACE_DIR}/eg \
     -eballots ${WORKSPACE_DIR}/bb/encryptedPaperBallots  \
     -mixballots ${WORKSPACE_DIR}/bb/vf/mix2/ShuffledCiphertexts.bt \

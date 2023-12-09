@@ -1,6 +1,7 @@
-package org.cryptobiotic.mixnet
+package org.cryptobiotic.verificabitur.vmn
 
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
+import org.cryptobiotic.verificabitur.vmn.RunMakeMixnetInput
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
