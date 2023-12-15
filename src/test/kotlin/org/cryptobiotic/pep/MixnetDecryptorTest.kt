@@ -10,23 +10,29 @@ import org.cryptobiotic.verificabitur.bytetree.ByteTreeNode
 import org.cryptobiotic.verificabitur.bytetree.readByteTreeFromFile
 import kotlin.test.Test
 import kotlin.test.assertNotNull
+import kotlin.test.fail
 
 // check that the mixnet output decrypts properly
 class MixnetDecryptorTest {
+    val inputDir = "src/test/data/working"
+    val egDir = "$inputDir/eg"
+    val vfDir = "$inputDir/vf"
+    val bbDir = "$inputDir/bb"
     val group = productionGroup()
 
     @Test
-    fun testCompareMixnet() {
-        val root = readByteTreeFromFile("src/commonTest/data/rave/vf/input-ciphertexts.raw")
+    fun testMixnetInput() {
+        val root = readByteTreeFromFile("$vfDir/inputCiphertexts.bt")
         val ptree = convertByteTree(root.root)
 
-        val consumer = makeConsumer(group, "src/commonTest/data/rave/eg")
+        val consumer = makeConsumer(group, "$egDir")
         val result = consumer.readEncryptedBallot(
-            "src/commonTest/data/rave/bb/EB",
-            "id318732082"
+            "$inputDir/bb/encryptedBallots",
+            "id-1066432929"
         )
         if (result is Err) {
             println(result.error)
+            fail()
         } else {
             val eballot = result.unwrap()
             var count = 1
@@ -38,6 +44,7 @@ class MixnetDecryptorTest {
                         println("$count found ${it.selectionId} in $where")
                     } else {
                         println("$count not found ${it.selectionId}")
+                        fail()
                     }
                     count++
                 }
@@ -49,14 +56,14 @@ class MixnetDecryptorTest {
     fun testCiphertextDecryptor() {
         val decryptor = CiphertextDecryptor(
             group,
-            "src/commonTest/data/rave/eg",
-            "src/commonTest/data/rave/eg/trustees",
+            "$egDir",
+            "$egDir/trustees",
         )
 
-        val consumer = makeConsumer(group, "src/commonTest/data/rave/eg")
+        val consumer = makeConsumer(group, "$egDir")
         val result = consumer.readEncryptedBallot(
-            "src/commonTest/data/rave/bb/EB",
-            "id318732082"
+            "$inputDir/bb/encryptedBallots",
+            "id711984157"
         )
         if (result is Err) {
             println(result.error)
@@ -77,7 +84,7 @@ class MixnetDecryptorTest {
 
     @Test
     fun testDecryptMixnetOutput() {
-        val root = readByteTreeFromFile("src/commonTest/data/rave/vf/after-mix-2-ciphertexts.raw")
+        val root = readByteTreeFromFile("$bbDir/vf/mix2/ShuffledCiphertexts.bt")
         val ptree = convertByteTree(root.root)
         println(ptree)
         val ctree = convertPTree(ptree)
@@ -85,8 +92,8 @@ class MixnetDecryptorTest {
 
         val decryptor = CiphertextDecryptor(
             group,
-            "src/commonTest/data/rave/eg",
-            "src/commonTest/data/rave/eg/trustees",
+            "$egDir",
+            "$egDir/trustees",
         )
 
         decryptor.checkCipherTextDecrypts(ctree)
