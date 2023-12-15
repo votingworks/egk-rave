@@ -1,6 +1,6 @@
 # Rave Cryptography
 
-_last update 12/08/2023_
+_last update 12/15/2023_
 
 This is the kotlin/java code for RAVE cryptography. It builds on top of 
 
@@ -8,6 +8,8 @@ This is the kotlin/java code for RAVE cryptography. It builds on top of
 * [Verificatum Mixnet](https://www.verificatum.org/)
 
 See [RAVE Cryptography Implementation](https://github.com/votingworks/rave-cryptography-implementation) for more information.
+
+Library dependencies are summarized [here](dependencies.txt).
 
 ## Install
 
@@ -131,7 +133,7 @@ vf/
         proofs/
             PermutationCommittment01.bt
             PoSCommittment01.bt
-            PosReply01.bt`
+            PosReply01.bt
 ````
 
 Notes
