@@ -1,8 +1,9 @@
-12/15/23
+12/19/23
+
 $ ./gradlew -q dependencies --configuration runtimeClasspath
 
 ------------------------------------------------------------
-Root project 'rave-mixnet'
+Root project 'egk-rave'
 ------------------------------------------------------------
 
 runtimeClasspath - Runtime classpath of null/main.

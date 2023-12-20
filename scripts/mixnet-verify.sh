@@ -14,7 +14,7 @@ rave_print "Verifying shuffled ballots..."
 EG_BB="${WORKSPACE_DIR}/bb/eg"
 VF_BB="${WORKSPACE_DIR}/bb/vf"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
 rave_print "... verify mix1 shuffle ..."
 

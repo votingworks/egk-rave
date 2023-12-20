@@ -12,7 +12,7 @@ fi
 
 rave_print "Reencrypt ballots to simulate paper ballot scanning"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
 java \
   -classpath ${CLASSPATH} \

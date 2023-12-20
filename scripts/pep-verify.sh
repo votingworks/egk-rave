@@ -11,7 +11,7 @@ fi
 
 rave_print "Verify the PEP output."
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
 java \
   -classpath ${CLASSPATH} \

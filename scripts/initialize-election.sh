@@ -27,7 +27,7 @@ node scripts/election-definition-convert-vx-to-eg.js ${VX_DEF} ${WORKSPACE_DIR}/
 
 rave_print "  build sample ElectionGuard configuration"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
  java -classpath $CLASSPATH electionguard.cli.RunCreateElectionConfig \
     -manifest ${WORKSPACE_DIR}/eg/manifest.json \
