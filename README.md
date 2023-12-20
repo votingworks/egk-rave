@@ -1,6 +1,6 @@
-# Rave Cryptography
+# Egk Rave Cryptography
 
-_last update 12/15/2023_
+_last update 12/19/2023_
 
 This is the kotlin/java code for RAVE cryptography. It builds on top of 
 
@@ -14,23 +14,23 @@ Library dependencies are summarized [here](dependencies.txt).
 ## Install
 
 This version is completely self-contained, by including a copy of the electionguard and verificatum jars in it.
-This means you dont have to install verificatum at all, since rave-mixnet provides wrappers around the verificatum
+This means you dont have to install verificatum at all, since egk-rave provides wrappers around the verificatum
 library.
 
 ````
 cd <install-dir>
-git clone https://github.com/JohnLCaron/rave-mixnet.git
-cd rave-mixnet
+git clone https://github.com/votingworks/egk-rave.git
+cd egk-rave
 ./gradlew clean assemble
 ````
 
 ## Sample Workflow for testing
 
 ````
-~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
+~/dev/github/egk-rave:$ ./scripts/runCompleteWorkflow.sh
 ````
 
-Runs a complete test RAVE workflow and writes the output to the _working_ subdirectory. [Sample Output](docs/workflowOutput.txt)
+Runs a complete test of the RAVE workflow and writes the output to the _working_ subdirectory. [Sample Output](docs/workflowOutput.txt)
 
 The components of this workflow are:
 

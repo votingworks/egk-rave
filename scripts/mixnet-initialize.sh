@@ -14,7 +14,7 @@ rave_print "Initialize verificatum mixnet..."
 EG_WORKSPACE="${WORKSPACE_DIR}/eg"
 VERIFICATUM_WORKSPACE="${WORKSPACE_DIR}/vf"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 java -classpath $CLASSPATH \
   org.cryptobiotic.verificabitur.vmn.RunMixnetConfig \
     -input ${EG_WORKSPACE} \

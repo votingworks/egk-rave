@@ -17,7 +17,7 @@ ELECTION_PARAMS="${EG_WORKSPACE}/election_initialized.json"
 
 VERIFICATUM_WORKSPACE="${WORKSPACE_DIR}/vf"
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
 # shuffle once
 rave_print "... now shuffling once ..."

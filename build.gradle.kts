@@ -11,11 +11,15 @@ plugins {
     alias(libs.plugins.serialization)
 
     application
+    id ("maven-publish")
 }
 
 repositories {
     mavenCentral()
 }
+
+group = "egk-rave"
+version = "0.3-SNAPSHOT"
 
 dependencies {
     implementation(files("libs/egklib-jvm-2.0.3-SNAPSHOT.jar"))
@@ -40,4 +44,27 @@ kotlin {
 
 application {
     mainClass.set("MainKt")
+}
+
+// publish github package
+// https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/JohnLCaron/egk-rave")
+            credentials {
+                username = project.findProperty("github.user") as String? ?: System.getenv("GITHUB_USER")
+                password = project.findProperty("github.key") as String? ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+            groupId = "org.cryptobiotic"
+            artifactId = "egk-rave"
+            version = "0.3.1"
+        }
+    }
 }

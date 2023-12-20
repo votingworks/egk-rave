@@ -18,7 +18,7 @@ fi
 
 rave_print "Generating ${NUM_BALLOTS} ballots..."
 
-CLASSPATH="build/libs/rave-mixnet-all.jar"
+CLASSPATH="build/libs/egk-rave-all.jar"
 
 java -classpath $CLASSPATH \
      electionguard.cli.RunCreateInputBallots \

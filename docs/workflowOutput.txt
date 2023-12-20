@@ -1,4 +1,6 @@
-~/dev/github/rave-mixnet:$ ./scripts/runCompleteWorkflow.sh
+12/19/2023
+
+$ ./scripts/runCompleteWorkflow.sh
 Initializing Election: reinitialize working directory
   build sample ElectionGuard manifest from scripts/famous-names-election.json
   build sample ElectionGuard configuration
@@ -16,7 +18,7 @@ RunTrustedKeyCeremony starting
    input= working/eg
    trustees= working/eg/trustees
    output = working/eg
-RunTrustedKeyCeremony took 2697 millisecs
+RunTrustedKeyCeremony took 2524 millisecs
 runKeyCeremony result = Ok(true)
 [DONE] Generating ElectionGuard initialization in working/eg
 Generating 13 ballots...
@@ -36,16 +38,16 @@ RunBatchEncryption starting
    nthreads = 11
    check = None
    anonymize = false
-Encryption with nthreads = 11 took 1504 millisecs for 13 ballots = 116 msecs/ballot
-    533 total encryptions = 41 per ballot = 2.821763602251407 millisecs/encryption with 11 threads
+Encryption with nthreads = 11 took 1679 millisecs for 13 ballots = 129 msecs/ballot
+    533 total encryptions = 41 per ballot = 3.150093808630394 millisecs/encryption with 11 threads
 [DONE] Generating encrypted ballots: working/bb/encryptedBallots
 Tallying encrypted ballots...
 RunAccumulateTally starting
    input= working/eg
    outputDir = working/eg
    encryptDir = working/bb/encryptedBallots
-AccumulateTally processed 13 good ballots, 0 bad ballots, took 409 millisecs, 31 msecs per good ballot
-  ballots ids accumulated = id-1379921164,id273560147,id-1052009839,id-1768790100,id1475235385,id1176542537,id205854950,id1278349787,id-2104891758,id1778650435,id-2022562062,id1376579992,id1608216892
+AccumulateTally processed 13 good ballots, 0 bad ballots, took 386 millisecs, 30 msecs per good ballot
+  ballots ids accumulated = id978326763,id1868859394,id-316135190,id91538206,id-1644798743,id831327015,id1573549558,id849674787,id91997903,id-2041677800,id1521461168,id-1164761559,id1590157536
 [DONE] Tallying encrypted ballots.
 Decrypting encrypted tally...
 RunTrustedTallyDecryption starting
@@ -53,7 +55,7 @@ RunTrustedTallyDecryption starting
    trustees= working/eg/trustees
    output = working/eg
 runDecryptTally present = [trustee1, trustee2, trustee3] missing = []
-DecryptTally took 1786 millisecs
+DecryptTally took 1784 millisecs
 [DONE] Decrypted tally in working/eg/tally.json
 Creating mixnet input from the encrypted ballots
 [DONE] Creating mixnet input.
@@ -97,19 +99,19 @@ RunMixnetVerifier starting
 Using Generator class = com.verificatum.protocol.mixnet.MixNetElGamalGen
 
 ============ Prepare to verify proof. ==========================
-231208 18:00:41 Read joint public key... done.
+231219 17:44:03 Read joint public key... done.
 
 Input ciphertexts = working/bb/vf/mix1/Ciphertexts.bt
-231208 18:00:42 Derive independent generators... done.
+231219 17:44:04 Derive independent generators... done.
 
 ============ Verify shuffle of Party 1. ========================
-231208 18:00:42 Read permutation commitment... done.
-231208 18:00:42 Read output of Party 1...
+231219 17:44:04 Read permutation commitment... done.
+231219 17:44:04 Read output of Party 1...
 Shuffled ciphertexts = working/bb/vf/mix1/ShuffledCiphertexts.bt
 done.
-231208 18:00:43 Verify proof of shuffle... done.
+231219 17:44:05 Verify proof of shuffle... done.
 Proof size is 977.0 KB  (977004 bytes)
-Completed verification after  0h  0m  9s  (9105 ms
+Completed verification after  0h  0m  9s  (9138 ms
 
 sessionId mix1 complete successfully
 ... verify mix2 shuffle ...
@@ -122,19 +124,19 @@ RunMixnetVerifier starting
 Using Generator class = com.verificatum.protocol.mixnet.MixNetElGamalGen
 
 ============ Prepare to verify proof. ==========================
-231208 18:00:51 Read joint public key... done.
+231219 17:44:13 Read joint public key... done.
 
 Input ciphertexts = working/bb/vf/mix2/Ciphertexts.bt
-231208 18:00:52 Derive independent generators... done.
+231219 17:44:14 Derive independent generators... done.
 
 ============ Verify shuffle of Party 1. ========================
-231208 18:00:52 Read permutation commitment... done.
-231208 18:00:52 Read output of Party 1...
+231219 17:44:14 Read permutation commitment... done.
+231219 17:44:14 Read output of Party 1...
 Shuffled ciphertexts = working/bb/vf/mix2/ShuffledCiphertexts.bt
 done.
-231208 18:00:52 Verify proof of shuffle... done.
+231219 17:44:15 Verify proof of shuffle... done.
 Proof size is 977.0 KB  (977004 bytes)
-Completed verification after  0h  0m  9s  (9160 ms
+Completed verification after  0h  0m  8s  (8923 ms
 
 sessionId mix2 complete successfully
 [DONE] Verifying shuffled ballots
@@ -148,8 +150,8 @@ RunBatchEncryption starting
    nthreads = 11
    check = None
    anonymize = true
-Encryption with nthreads = 11 took 1587 millisecs for 13 ballots = 122 msecs/ballot
-    533 total encryptions = 41 per ballot = 2.9774859287054407 millisecs/encryption with 11 threads
+Encryption with nthreads = 11 took 1759 millisecs for 13 ballots = 135 msecs/ballot
+    533 total encryptions = 41 per ballot = 3.300187617260788 millisecs/encryption with 11 threads
 [DONE] Reencrypting ballots.
 Checking mixnet output against the reencrypted ballots with PEP algorithm
 RunMixnetBlindTrustPep starting
@@ -160,40 +162,40 @@ RunMixnetBlindTrustPep starting
    -out working/bb/pep
    -nthreads 11
  MixnetBlindTrustPep compare ballots in 'working/eg' to ballots in 'working/bb/vf/mix2/ShuffledCiphertexts.bt'
-2023-12-08 18:01:05.549 WARN  error createDirectories = 'working/bb/pep'
-2023-12-08 18:01:08.681 INFO   PEP compared ballotId='12' equality=true
-2023-12-08 18:01:08.681 INFO   PEP compared ballotId='7' equality=true
-2023-12-08 18:01:08.681 INFO   PEP compared ballotId='1' equality=true
-2023-12-08 18:01:08.686 INFO   PEP compared ballotId='4' equality=true
-2023-12-08 18:01:08.686 INFO   PEP compared ballotId='2' equality=true
-2023-12-08 18:01:08.687 INFO   PEP compared ballotId='9' equality=true
-2023-12-08 18:01:08.687 INFO   PEP compared ballotId='13' equality=true
-2023-12-08 18:01:08.687 INFO   PEP compared ballotId='8' equality=true
-2023-12-08 18:01:08.688 INFO   PEP compared ballotId='5' equality=true
-2023-12-08 18:01:08.691 INFO   PEP compared ballotId='6' equality=true
-2023-12-08 18:01:08.709 INFO   PEP compared ballotId='11' equality=true
-2023-12-08 18:01:10.761 INFO   PEP compared ballotId='10' equality=true
-2023-12-08 18:01:10.872 INFO   PEP compared ballotId='3' equality=true
- MixnetBlindTrustPep: took 28314 msecs = 66.0 msecs/ciphertext (429 ciphertexts) = 2178.0 msecs/ballot for 13 ballots
-               total: took 28314 msecs = 66.0 msecs/ciphertext (429 ciphertexts) = 2178.0 msecs/ballot for 13 ballots
-MixnetBlindTrustPep took 5 wallclock secs for 13 ballots = .46053 secs/ballot with 11 threads
+2023-12-19 17:44:27.617 WARN  error createDirectories = 'working/bb/pep'
+2023-12-19 17:44:30.498 INFO   PEP compared ballotId='11' equality=true
+2023-12-19 17:44:30.498 INFO   PEP compared ballotId='12' equality=true
+2023-12-19 17:44:30.501 INFO   PEP compared ballotId='3' equality=true
+2023-12-19 17:44:30.502 INFO   PEP compared ballotId='10' equality=true
+2023-12-19 17:44:30.505 INFO   PEP compared ballotId='5' equality=true
+2023-12-19 17:44:30.508 INFO   PEP compared ballotId='1' equality=true
+2023-12-19 17:44:30.510 INFO   PEP compared ballotId='4' equality=true
+2023-12-19 17:44:30.514 INFO   PEP compared ballotId='6' equality=true
+2023-12-19 17:44:30.522 INFO   PEP compared ballotId='13' equality=true
+2023-12-19 17:44:30.523 INFO   PEP compared ballotId='2' equality=true
+2023-12-19 17:44:30.580 INFO   PEP compared ballotId='7' equality=true
+2023-12-19 17:44:32.809 INFO   PEP compared ballotId='9' equality=true
+2023-12-19 17:44:32.843 INFO   PEP compared ballotId='8' equality=true
+ MixnetBlindTrustPep: took 25910 msecs = 60.39 msecs/ciphertext (429 ciphertexts) = 1993.0 msecs/ballot for 13 ballots
+               total: took 25910 msecs = 60.39 msecs/ciphertext (429 ciphertexts) = 1993.0 msecs/ballot for 13 ballots
+MixnetBlindTrustPep took 5 wallclock secs for 13 ballots = .45369 secs/ballot with 11 threads
 [DONE] Checking mixnet output.
 Verify the PEP output.
 RunVerifyPep starting
    input= working/eg
  Pep verify ballots in 'working/bb/pep/'
-2023-12-08 18:01:13.750 INFO   PEP verify ballotId='3' is true
-2023-12-08 18:01:13.796 INFO   PEP verify ballotId='10' is true
-2023-12-08 18:01:13.812 INFO   PEP verify ballotId='8' is true
-2023-12-08 18:01:13.815 INFO   PEP verify ballotId='7' is true
-2023-12-08 18:01:13.816 INFO   PEP verify ballotId='6' is true
-2023-12-08 18:01:13.823 INFO   PEP verify ballotId='4' is true
-2023-12-08 18:01:13.831 INFO   PEP verify ballotId='13' is true
-2023-12-08 18:01:13.839 INFO   PEP verify ballotId='2' is true
-2023-12-08 18:01:13.847 INFO   PEP verify ballotId='5' is true
-2023-12-08 18:01:13.849 INFO   PEP verify ballotId='11' is true
-2023-12-08 18:01:13.860 INFO   PEP verify ballotId='9' is true
-2023-12-08 18:01:14.319 INFO   PEP verify ballotId='1' is true
-2023-12-08 18:01:14.340 INFO   PEP verify ballotId='12' is true
-PepVerify took 2 wallclock secs for 13 ballots = .188 secs/ballot with 11 threads
+2023-12-19 17:44:35.518 INFO   PEP verify ballotId='10' is true
+2023-12-19 17:44:35.596 INFO   PEP verify ballotId='13' is true
+2023-12-19 17:44:35.618 INFO   PEP verify ballotId='11' is true
+2023-12-19 17:44:35.620 INFO   PEP verify ballotId='9' is true
+2023-12-19 17:44:35.620 INFO   PEP verify ballotId='2' is true
+2023-12-19 17:44:35.626 INFO   PEP verify ballotId='3' is true
+2023-12-19 17:44:35.629 INFO   PEP verify ballotId='4' is true
+2023-12-19 17:44:35.641 INFO   PEP verify ballotId='8' is true
+2023-12-19 17:44:35.643 INFO   PEP verify ballotId='7' is true
+2023-12-19 17:44:35.649 INFO   PEP verify ballotId='5' is true
+2023-12-19 17:44:35.652 INFO   PEP verify ballotId='6' is true
+2023-12-19 17:44:36.137 INFO   PEP verify ballotId='1' is true
+2023-12-19 17:44:36.137 INFO   PEP verify ballotId='12' is true
+PepVerify took 2 wallclock secs for 13 ballots = .17907 secs/ballot with 11 threads
 [DONE] PEP verify.
