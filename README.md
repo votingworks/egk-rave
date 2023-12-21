@@ -21,6 +21,17 @@ library.
 cd <install-dir>
 git clone https://github.com/votingworks/egk-rave.git
 cd egk-rave
+````
+
+If you're on a basic Linux and need to install Java and Kotlin:
+
+````
+./scripts/install-basic.sh
+````
+
+Then build the code:
+
+````
 ./gradlew clean assemble
 ````
 
