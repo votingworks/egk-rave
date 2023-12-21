@@ -1,9 +1,10 @@
 package org.cryptobiotic.verificabitur.vmn
 
+import kotlin.test.Test
 import kotlin.test.assertTrue
 
 class RunMixnetTest {
-    val working = "src/test/data/working/vf"
+    val working = "working/vf"
 
     // need to set up a clean directory
     // @Test
@@ -27,4 +28,5 @@ class RunMixnetTest {
         )
         assertTrue(true)
     }
+
 }
