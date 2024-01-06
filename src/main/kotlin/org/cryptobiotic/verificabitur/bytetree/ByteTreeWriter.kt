@@ -37,6 +37,7 @@ fun ByteTreeNode.hex(): String {
     return ba.toHex().lowercase()
 }
 
+/////////////////////////////////////////
 fun intToBytes(i: Int): ByteArray =
     ByteBuffer.allocate(Int.SIZE_BYTES).putInt(i).order(ByteOrder.BIG_ENDIAN).array()
 
