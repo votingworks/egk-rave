@@ -7,7 +7,7 @@ class RunMixnetTest {
     val working = "working/vf"
 
     // need to set up a clean directory
-    // @Test
+    @Test
     fun testRunMixnet() {
         RunMixnet.main(
             arrayOf(
@@ -18,6 +18,7 @@ class RunMixnetTest {
             )
         )
 
+        /*
         RunMixnet.main(
             arrayOf(
                 "-in", "$working/nizkp/mix1/ShuffledCiphertexts.bt",
@@ -27,6 +28,7 @@ class RunMixnetTest {
             )
         )
         assertTrue(true)
+        */
     }
 
 }

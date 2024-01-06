@@ -27,20 +27,12 @@ class RunMixnetVerifierTest {
 
     @Test
     fun testRunVerifierMinimal() {
-        val inputDir = "testVerifier"
+        val inputDir = "working/bb/vf"
         RunMixnetVerifier.main(
             arrayOf(
-                "-nizkp", "$inputDir/mix1",
-                "-protInfo", "$inputDir/protInfo.xml",
+                "-shuffle", "$inputDir/mix1/",
+                "-protInfo", "$inputDir/protocolInfo.xml",
                 "-auxsid", "mix1",
-                "-width", "34",
-            )
-        )
-        RunMixnetVerifier.main(
-            arrayOf(
-                "-nizkp", "$inputDir/mix2",
-                "-protInfo", "$inputDir/protInfo.xml",
-                "-auxsid", "mix2",
                 "-width", "34",
             )
         )

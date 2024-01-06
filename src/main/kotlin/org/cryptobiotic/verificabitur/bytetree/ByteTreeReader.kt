@@ -1,15 +1,19 @@
 package org.cryptobiotic.verificabitur.bytetree
 
 import electionguard.core.Base16.fromHex
-import java.io.EOFException
 import java.io.File
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
-fun readByteTreeFromFile(filename : String) : ByteTree {
-    val file = File(filename) // gulp the entire file to a byte array
-    val ba : ByteArray = file.readBytes()
-    return readByteTree(ba)
+fun readByteTreeFromFile(filename: String): ByteTree {
+    try {
+        val file = File(filename) // gulp the entire file to a byte array
+        val ba: ByteArray = file.readBytes()
+        println("read ${ba.size} bytes from $filename")
+        return readByteTree(ba)
+    } catch (t: Throwable) {
+        println("Exception on $filename")
+        t.printStackTrace()
+        throw t
+    }
 }
 
 fun readByteTree(marsh : String) : ByteTree {
@@ -40,7 +44,7 @@ fun readByteTree(marsh : String) : ByteTree {
     return result
 }
 
-val COLON = ':'.code.toByte()
+private val COLON = ':'.code.toByte()
 fun readByteTree(ba : ByteArray) : ByteTree {
     var split = -1
     for (idx in 0..100) {
@@ -73,16 +77,4 @@ fun readByteTree(ba : ByteArray) : ByteTree {
 
      */
     return result
-}
-
-// big endian
-fun readInt(ba : ByteArray, start : Int) : Int {
-    val ch1: Int = ba[start].toInt()
-    val ch2: Int = ba[start+1].toInt()
-    val ch3: Int = ba[start+2].toInt()
-    val ch4: Int = ba[start+3].toInt()
-    if (ch1 or ch2 or ch3 or ch4 < 0) {
-        throw EOFException()
-    }
-    return (ch1 shl 24) + (ch2 shl 16) + (ch3 shl 8) + ch4
 }

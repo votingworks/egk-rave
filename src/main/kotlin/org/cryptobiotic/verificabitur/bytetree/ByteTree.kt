@@ -100,7 +100,7 @@ fun makeNode(name: String, ba: ByteArray, start: Int): ByteTreeNode {
             throw RuntimeException("not a ByteTree")
         }
         val isLeaf = ba[start] == 1.toByte()
-        val n = readInt(ba, start + 1) // number of bytes (leaf) or number of children (non-leaf)
+        val n = bytesToInt(ba, start + 1) // number of bytes (leaf) or number of children (non-leaf)
         if (n >= ba.size) {
             throw RuntimeException("Illegal value for n = $n")
         }

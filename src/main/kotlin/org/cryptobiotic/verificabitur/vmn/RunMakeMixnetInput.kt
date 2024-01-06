@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.encodeToStream
 import org.cryptobiotic.verificabitur.bytetree.MixnetBallot
 import org.cryptobiotic.verificabitur.bytetree.publish
+import org.cryptobiotic.verificabitur.bytetree.writeByteTreeToFile
 import java.io.FileOutputStream
 
 /** Read the EG encrypted ballots and create input file for the mixnet. */
@@ -75,11 +76,13 @@ class RunMakeMixnetInput {
         FileOutputStream(outputFile).use { out ->
             jsonReader.encodeToStream(json, out)
         }
+        println("*** Write mixnetBallots to Json $outputFile")
     }
 
     fun writeByteTree(mixnetBallots: List<MixnetBallot>, outputFile: String) {
         val tree = mixnetBallots.publish()
-        org.cryptobiotic.verificabitur.bytetree.writeByteTreeToFile(tree, outputFile)
+        writeByteTreeToFile(tree, outputFile)
+        println("*** Write mixnetBallots to byteTree $outputFile")
     }
 
 }

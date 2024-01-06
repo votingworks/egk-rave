@@ -202,8 +202,8 @@ class Mixnet(privInfo: String, protInfo: String) {
             )
         )
 
-
-        val totalExecutionTime = timer!!.elapsed()
+        println("RunMixnet elapsed time = ${timer.elapsed()} msecs ($timer)")
+        val totalExecutionTime = timer.elapsed()
         val totalNetworkTime = mixnet.totalNetworkTime
         val totalEffectiveTime = totalExecutionTime - totalNetworkTime
         val totalWaitingTime = mixnet.totalWaitingTime
