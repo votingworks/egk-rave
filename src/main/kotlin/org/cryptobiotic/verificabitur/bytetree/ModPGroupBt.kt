@@ -25,7 +25,7 @@ fun ByteTreeNode.importModPGroup() : ModPGroupBt {
     val modulus = BigInteger(1, modPGroupNode.child[0].content)
     val order = BigInteger(1, modPGroupNode.child[1].content)
     val generator = BigInteger(1, modPGroupNode.child[2].content)
-    val encoding = readInt(modPGroupNode.child[3].content!!, 0)
+    val encoding = bytesToInt(modPGroupNode.child[3].content!!, 0)
 
     return ModPGroupBt(name, modulus, order, generator, encoding)
 }

@@ -59,9 +59,11 @@ class RunMixnetVerifier {
                         "   sessionId = $sessionId\n"
             )
 
+            val timer = SimpleTimer();
             val verifier = Verifier(inputDir, protInfo, sessionId, width, true)
             verifier.verify()
             println("sessionId $sessionId complete successfully")
+            println("RunMixnetVerifier elapsed time = ${timer.elapsed()} msecs ($timer)")
         }
     }
 }

@@ -16,6 +16,11 @@ class ByteTreeReaderTest {
     }
 
     @Test
+    fun testReadRaveInput2() {
+        readByteTreeFromFile("working/vf/inputCiphertexts.bt", 2)
+    }
+
+    @Test
     fun testReadRaveOutput() {
         readByteTreeFromFile("$inputDir/Party01/nizkp/mix1/ShuffledCiphertexts.bt", 2)
         readByteTreeFromFile("$inputDir/Party01/nizkp/mix2/ShuffledCiphertexts.bt", 2)
@@ -112,13 +117,6 @@ class ByteTreeReaderTest {
 private fun readByteTreeFromFile(filename : String, maxDepth: Int) : ByteTree {
     println("readByteTreeFromFile = ${filename}")
     val tree = readByteTreeFromFile(filename)
-    println(tree.show(maxDepth))
-    return tree
-}
-
-private fun readByteTreeFromFileOld(filename : String, maxDepth: Int) : ByteTreeRootOld {
-    println("readByteTreeFromFileOld = ${filename}")
-    val tree = readByteTreeOldFromFile(filename)
     println(tree.show(maxDepth))
     return tree
 }

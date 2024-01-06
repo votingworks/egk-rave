@@ -1,6 +1,6 @@
 # Egk Rave Cryptography
 
-_last update 12/19/2023_
+_last update 12/27/2023_
 
 This is the kotlin/java code for RAVE cryptography. It builds on top of 
 
@@ -23,13 +23,29 @@ git clone https://github.com/votingworks/egk-rave.git
 cd egk-rave
 ````
 
-If you're on a basic Linux and need to install Java and Kotlin:
+If you're on a basic Linux and need to install Java and Kotlin the first time:
 
 ````
 ./scripts/install-basic.sh
 ````
 
-Then build the code:
+## Build
+
+To build the code:
+
+````
+./gradlew clean assemble
+````
+
+If the library has changed and you need to update it:
+
+````
+cd ~/dev/github/egk-rave:
+git fetch origin
+git rebase -i origin/main
+````
+
+Then rebuild the code:
 
 ````
 ./gradlew clean assemble

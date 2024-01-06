@@ -8,14 +8,20 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 fun writeByteTreeToFile(node: ByteTreeNode, filename: String) {
-    FileOutputStream(filename).use { out ->
-        node.write(out)
-        out.close()
+    try {
+        FileOutputStream(filename).use { out ->
+            node.write(out)
+            out.flush()
+        }
+    } catch (t: Throwable) {
+        println("Exception on $filename")
+        t.printStackTrace()
+        throw t
     }
 }
 
 fun ByteTreeNode.write(out: OutputStream) {
-    if (isLeaf) out.write(1) else out.write (0)
+    if (isLeaf) out.write(1) else out.write(0)
     out.write(intToBytes(n))
     if (isLeaf) out.write(content!!) else child.forEach { it.write(out) }
 }
@@ -33,3 +39,6 @@ fun ByteTreeNode.hex(): String {
 
 fun intToBytes(i: Int): ByteArray =
     ByteBuffer.allocate(Int.SIZE_BYTES).putInt(i).order(ByteOrder.BIG_ENDIAN).array()
+
+fun bytesToInt(ba: ByteArray, offset: Int = 0): Int =
+    ByteBuffer.wrap(ba, offset, 4).order(ByteOrder.BIG_ENDIAN).asIntBuffer().get(0)
