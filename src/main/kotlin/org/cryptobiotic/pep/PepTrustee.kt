@@ -2,7 +2,6 @@ package org.cryptobiotic.pep
 
 import electionguard.core.ElGamalCiphertext
 import electionguard.core.GroupContext
-import electionguard.core.randomElementModQ
 
 class PepTrustee(val idx : Int, val group : GroupContext) : PepTrusteeIF {
     val randomConstantNonce = group.randomElementModQ(2) // weak sauce

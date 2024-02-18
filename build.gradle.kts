@@ -19,10 +19,10 @@ repositories {
 }
 
 group = "egk-rave"
-version = "0.3-SNAPSHOT"
+version = "0.4-SNAPSHOT"
 
 dependencies {
-    implementation(files("libs/egklib-jvm-2.0.3-SNAPSHOT.jar"))
+    implementation(files("libs/egklib-jvm-2.0.4-SNAPSHOT.jar"))
     implementation(files("libs/verificatum-vcr-3.1.0.jar"))
     implementation(files("libs/verificatum-vmn-3.1.0.jar"))
 

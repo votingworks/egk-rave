@@ -71,7 +71,7 @@ class TestPepWorkflow {
         val (_, init) = runFakeKeyCeremony(group, workingDir, workingDir, trusteeDir, nguardians, quorum, false)
 
         // encrypt
-        group.showAndClearCountPowP()
+        group.getAndClearOpCounts()
         batchEncryption(group, inputDir = workingDir, ballotDir = inputBallotDir, "device11", outputDir = workingDir, null, invalidDir, nthreads, name1)
         //println("----------- after encrypt ${group.showAndClearCountPowP()}")
 
@@ -82,7 +82,7 @@ class TestPepWorkflow {
 
         val decryptingTrustees = readDecryptingTrustees(group, trusteeDir, init, present, true)
 
-        group.showAndClearCountPowP()
+        group.getAndClearOpCounts()
 
         //  fun batchMixnetBlindTrustPep(
         //            group: GroupContext,
@@ -110,7 +110,7 @@ class TestPepWorkflow {
         val nencyptions = 100
         val nb = 3
         val expect = (8 + 8 * nguardians + 8 * nb) * nencyptions  * nballots // counting the verifier
-        println("----------- after compareBallotPepEquivilence ${group.showAndClearCountPowP()}, expect=$expect")
+        println("----------- after compareBallotPepEquivilence ${group.getAndClearOpCounts()}, expect=$expect")
     }
 }
 
