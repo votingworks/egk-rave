@@ -1,5 +1,4 @@
-
-const fs = require('fs');
+const fs = require("fs");
 
 const [inputFilePath, outputFilePath] = process.argv.slice(2);
 
@@ -8,23 +7,24 @@ if (!inputFilePath || !outputFilePath) {
   process.exit(1);
 }
 
-const fileContents = fs.readFileSync(inputFilePath, 'utf-8');
+const fileContents = fs.readFileSync(inputFilePath, "utf-8");
 const vxElectionDefinition = JSON.parse(fileContents);
 const egElectionDefinition = {
   election_scope_id: "TestManifest",
   spec_version: "v2.0.0",
-  type: vxElectionDefinition.title.indexOf('Primary') > -1 ? "primary" : "general",
+  type:
+    vxElectionDefinition.title.indexOf("Primary") > -1 ? "primary" : "general",
   start_date: "start",
   end_date: "end",
-  geopolitical_units: vxElectionDefinition.districts.map(d => {
+  geopolitical_units: vxElectionDefinition.districts.map((d) => {
     return {
       object_id: `district-${d.id}`,
       name: d.name,
       type: "district",
-      contact_information: null
+      contact_information: null,
     };
   }),
-  parties: vxElectionDefinition.parties.map(p => {
+  parties: vxElectionDefinition.parties.map((p) => {
     return {
       object_id: `party-${p.id}`,
       name: p.name,
@@ -33,19 +33,19 @@ const egElectionDefinition = {
       logo_uri: null,
     };
   }),
-  candidates: vxElectionDefinition.contests.flatMap(contest => {
+  candidates: vxElectionDefinition.contests.flatMap((contest) => {
     if (!contest.candidates) {
-      return []
+      return [];
     }
 
-    return contest.candidates.map(cand => {
+    return contest.candidates.map((cand) => {
       return {
         object_id: `cand-${cand.id}`,
         name: cand.name,
         party_id: `party-${cand.partyIds[0]}`,
         image_url: null,
         is_write_in: false,
-      }
+      };
     });
   }),
   contests: vxElectionDefinition.contests.map((contest, contest_num) => {
@@ -55,8 +55,8 @@ const egElectionDefinition = {
       electoral_district_id: `district-${contest.districtId}`,
       vote_variation: "one_of_m",
       number_elected: contest.seats,
-	votes_allowed: contest.seats,
-	name: `contest-${contest.id}`,
+      votes_allowed: contest.seats,
+      name: `contest-${contest.id}`,
       ballot_selections: contest.candidates.map((cand, cand_num) => {
         return {
           object_id: `cand-${cand.id}`,
@@ -66,14 +66,14 @@ const egElectionDefinition = {
       }),
       ballot_title: contest.title,
       ballot_subtitle: contest.section,
-    }
+    };
   }),
-  ballot_styles: vxElectionDefinition.ballotStyles.map(ballotStyle => {
+  ballot_styles: vxElectionDefinition.ballotStyles.map((ballotStyle) => {
     return {
       object_id: `ballot-style-${ballotStyle.id}`,
-	geopolitical_unit_ids: ballotStyle.districts.map(d => `district-${d}`),
+      geopolitical_unit_ids: ballotStyle.districts.map((d) => `district-${d}`),
       party_ids: [`party-${ballotStyle.partyId}`],
-      image_url: null
+      image_url: null,
     };
   }),
   name: [],
@@ -82,7 +82,7 @@ const egElectionDefinition = {
     email: null,
     phone: "",
     name: "contact",
-  }
-}
+  },
+};
 
 fs.writeFileSync(outputFilePath, JSON.stringify(egElectionDefinition, null, 2));
