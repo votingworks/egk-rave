@@ -65,7 +65,7 @@ The components of this workflow are:
 
 1. Deletes the working directory and starts fresh.
 2. Uses _famous-names-election.json_ to create an electionguard _manifest.json_.
-3. Create an electiongurad configuration file with default election parameters.
+3. Create an electionguard configuration file with default election parameters.
 4. Runs the electionguard keyceremony to create private trustee keys and a public election key.
 
 ###  generate-and-encrypt-ballots.sh working nballots
